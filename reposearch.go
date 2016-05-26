@@ -61,6 +61,7 @@ func RunSearchRepo(repo string) {
 		for _, item := range items.Items {
 			lines()
 			fmt.Println("Repo:", item.Name)
+			fmt.Println("Description:", item.Description)
 			fmt.Println("URL:", item.Html_url)
 			fmt.Println("Owner:", item.Owner.Login)
 			fmt.Println("Language:", item.Language)
@@ -82,6 +83,7 @@ func RunSearchRepo(repo string) {
 				for _, item := range items.Items {
 					lines()
 					fmt.Println("Repo:", item.Name)
+					fmt.Println("Description:", item.Description)
 					fmt.Println("URL:", item.Html_url)
 					fmt.Println("Owner:", item.Owner.Login)
 					fmt.Println("Language:", item.Language)
