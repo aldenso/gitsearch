@@ -67,15 +67,15 @@ func NextUrl(url string) (Resp, string) {
 
 // function go get the url from Link in header
 func Regexp(input string) string {
-	re := regexp.MustCompile("rel=next")
-	next := re.FindString(input)
-	if len(next) > 0 {
-		re = regexp.MustCompile("[[:alnum:]]+[[:graph:]]+[[:alnum:]]")
-		url := re.FindString(input)
+	var url string
+	re1 := regexp.MustCompile("next")
+	next := re1.FindString(input)
+	if next != "" {
+		re2 := regexp.MustCompile("[[:alnum:]]+[[:graph:]]+[[:alnum:]]")
+		url = re2.FindString(input)
 		return url
-	} else {
-		return ""
 	}
+	return url
 }
 
 func RunSearchUser(user string) {
@@ -91,22 +91,23 @@ func RunSearchUser(user string) {
 		// loop over next page url
 		for len(Link) > 0 {
 			nexturl := Regexp(Link)
-			fmt.Println(nexturl)
+			lines()
+			fmt.Println("Next Page ==>", nexturl)
 			var answer string
-			fmt.Println("Go to next page? (y/N):")
+			fmt.Println("Go to next page? (Y/N):")
 			n, err := fmt.Scanf("%s\n", &answer)
 			if err != nil {
 				fmt.Println(n, err)
 			}
-			switch answer {
-			case "Y":
+			switch {
+			case answer == "Y" || answer == "y":
 				items, Link = NextUrl(nexturl)
 				for _, item := range items.Items {
 					lines()
 					fmt.Println("User: ", item.Login)
 					fmt.Println("URL", item.Html_url)
 				}
-			case "N":
+			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
 				os.Exit(0)
 			}
