@@ -8,3 +8,4 @@ Usage:
     # gitsearch --help
     # gitsearch -user -pattern aldenso
     # gitsearch -repo -pattern gitsearch
+    # gitsearch -repo -pattern gitsearch -lang python

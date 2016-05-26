@@ -21,7 +21,7 @@ func searchUser(pattern string) (RespUser, string) {
 	}
 	defer response.Body.Close()
 	if link = response.Header.Get("Link"); len(link) == 0 {
-		fmt.Println("No more results")
+		fmt.Println("Showing results in one page")
 	}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {

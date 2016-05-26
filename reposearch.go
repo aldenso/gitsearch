@@ -12,7 +12,12 @@ import (
 func searchRepo(pattern string) (RespRepo, string) {
 	var data RespRepo
 	var link string
-	url := (apiUrl + "repositories?q=" + pattern)
+	var url string
+	if len(*language) > 0 {
+		url = (apiUrl + "repositories?q=" + pattern + "+language:" + *language)
+	} else {
+		url = (apiUrl + "repositories?q=" + pattern)
+	}
 	lines()
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
@@ -21,7 +26,7 @@ func searchRepo(pattern string) (RespRepo, string) {
 	}
 	defer response.Body.Close()
 	if link = response.Header.Get("Link"); len(link) == 0 {
-		fmt.Println("No more results")
+		fmt.Println("Showing results in one page")
 	}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
@@ -65,6 +70,7 @@ func RunSearchRepo(repo string) {
 			fmt.Println("URL:", item.Html_url)
 			fmt.Println("Owner:", item.Owner.Login)
 			fmt.Println("Language:", item.Language)
+			fmt.Println("Stars:", item.Stargazers_count)
 		}
 		// loop over next page url
 		for len(Link) > 0 {
@@ -87,6 +93,7 @@ func RunSearchRepo(repo string) {
 					fmt.Println("URL:", item.Html_url)
 					fmt.Println("Owner:", item.Owner.Login)
 					fmt.Println("Language:", item.Language)
+					fmt.Println("Stars:", item.Stargazers_count)
 				}
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")

@@ -10,7 +10,8 @@ var (
 	apiUrl       = "https://api.github.com/search/"
 	user         = flag.Bool("user", false, "search for a user, (do not use with -repo flag)")
 	repo         = flag.Bool("repo", false, "search for a repo, (do not use with -user flag)")
-	searchString = flag.String("pattern", "github", "indicate the pattern you are looking for")
+	searchString = flag.String("pattern", "", "indicate the pattern you are looking for")
+	language     = flag.String("lang", "", "indicate a language for search")
 )
 
 func lines() {
@@ -32,9 +33,13 @@ func Regexp(input string) string {
 
 func main() {
 	flag.Parse()
-	if *user {
+	if *user && *searchString != "" {
 		RunSearchUser(*searchString)
-	} else if *repo {
+	} else if *repo && *searchString != "" {
 		RunSearchRepo(*searchString)
+	} else {
+		fmt.Println("You must use an option:")
+		fmt.Println("./gitsearch -user -pattern pattern")
+		fmt.Println("./gitsearch -repo -pattern pattern")
 	}
 }
