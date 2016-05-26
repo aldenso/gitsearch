@@ -8,8 +8,8 @@ import (
 
 var (
 	apiUrl       = "https://api.github.com/search/"
-	user         = flag.Bool("user", false, "indicate is you are looking for a user")
-	repo         = flag.Bool("repo", false, "indicate is you are looking for a repo")
+	user         = flag.Bool("user", false, "search for a user, (do not use with -repo flag)")
+	repo         = flag.Bool("repo", false, "search for a repo, (do not use with -user flag)")
 	searchString = flag.String("pattern", "github", "indicate the pattern you are looking for")
 )
 
@@ -34,5 +34,7 @@ func main() {
 	flag.Parse()
 	if *user {
 		RunSearchUser(*searchString)
+	} else if *repo {
+		RunSearchRepo(*searchString)
 	}
 }

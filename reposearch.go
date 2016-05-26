@@ -9,10 +9,10 @@ import (
 )
 
 // function to make search for a particular user pattern
-func searchUser(pattern string) (RespUser, string) {
-	var data RespUser
+func searchRepo(pattern string) (RespRepo, string) {
+	var data RespRepo
 	var link string
-	url := (apiUrl + "users?q=" + pattern)
+	url := (apiUrl + "repositories?q=" + pattern)
 	lines()
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
@@ -31,8 +31,8 @@ func searchUser(pattern string) (RespUser, string) {
 }
 
 // function to get next item and maybe next page url
-func NextUrlUser(url string) (RespUser, string) {
-	var data RespUser
+func NextUrlRepo(url string) (RespRepo, string) {
+	var data RespRepo
 	var link string
 	lines()
 	fmt.Println("using url:", url)
@@ -53,16 +53,17 @@ func NextUrlUser(url string) (RespUser, string) {
 }
 
 // function to run the main process for user search
-func RunSearchUser(user string) {
-	items, Link := searchUser(user)
+func RunSearchRepo(repo string) {
+	items, Link := searchRepo(repo)
 	lines()
 	fmt.Println("Results Count:", items.Count)
 	if items.Count > 0 {
 		for _, item := range items.Items {
 			lines()
-			fmt.Println("User:", item.Login)
+			fmt.Println("Repo:", item.Name)
 			fmt.Println("URL:", item.Html_url)
-			fmt.Println("Score:", item.Score)
+			fmt.Println("Owner:", item.Owner.Login)
+			fmt.Println("Language:", item.Language)
 		}
 		// loop over next page url
 		for len(Link) > 0 {
@@ -77,12 +78,13 @@ func RunSearchUser(user string) {
 			}
 			switch {
 			case answer == "Y" || answer == "y":
-				items, Link = NextUrlUser(nexturl)
+				items, Link = NextUrlRepo(nexturl)
 				for _, item := range items.Items {
 					lines()
-					fmt.Println("User: ", item.Login)
-					fmt.Println("URL", item.Html_url)
-					fmt.Println("Score:", item.Score)
+					fmt.Println("Repo:", item.Name)
+					fmt.Println("URL:", item.Html_url)
+					fmt.Println("Owner:", item.Owner.Login)
+					fmt.Println("Language:", item.Language)
 				}
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
