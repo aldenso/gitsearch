@@ -1,12 +1,12 @@
 package main
 
-type Resp struct {
-	Count              int    `json:"total_count"`
-	Incomplete_results bool   `json:"incomplete_results"`
-	Items              []Item `json:"items"`
+type RespUser struct {
+	Count              int        `json:"total_count"`
+	Incomplete_results bool       `json:"incomplete_results"`
+	Items              []ItemUser `json:"items"`
 }
 
-type Item struct {
+type ItemUser struct {
 	Login               string  `json:"login"`
 	Id                  int     `json:"id"`
 	Avatar_url          string  `json:"avatar_url"`
