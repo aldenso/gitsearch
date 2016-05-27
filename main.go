@@ -7,12 +7,29 @@ import (
 )
 
 var (
-	apiUrl       = "https://api.github.com/search/"
-	user         = flag.Bool("user", false, "search for a user, (do not use with -repo flag)")
-	repo         = flag.Bool("repo", false, "search for a repo, (do not use with -user flag)")
-	searchString = flag.String("pattern", "", "indicate the pattern you are looking for")
-	language     = flag.String("lang", "", "indicate a language for search")
+	apiUrl                 = "https://api.github.com/search/"
+	user, repo             bool
+	searchString, language string
 )
+
+func init() {
+	flag.BoolVar(&user, "user", false, "search for a user, (do not use with -repo flag)")
+	flag.BoolVar(&user, "u", false, "shorthand for -user")
+	flag.BoolVar(&repo, "repo", false, "indicate the pattern you are looking for")
+	flag.BoolVar(&repo, "r", false, "shorthand for -repo")
+	flag.StringVar(&searchString, "pattern", "", "indicate the pattern you are looking for")
+	flag.StringVar(&searchString, "p", "", "shorthand for -pattern")
+	flag.StringVar(&language, "lang", "", "indicate a language for search")
+	flag.StringVar(&language, "l", "", "shorthand for -lang")
+}
+
+func CheckUsage() {
+	fmt.Println("You must use an option:")
+	fmt.Println("./gitsearch -user -pattern pattern")
+	fmt.Println("./gitsearch -repo -pattern pattern")
+	fmt.Println("./gitsearch -u -p pattern")
+	fmt.Println("./gitsearch -r -p pattern")
+}
 
 func lines() {
 	fmt.Println("===============================================================")
@@ -33,13 +50,11 @@ func Regexp(input string) string {
 
 func main() {
 	flag.Parse()
-	if *user && *searchString != "" {
-		RunSearchUser(*searchString)
-	} else if *repo && *searchString != "" {
-		RunSearchRepo(*searchString)
+	if user && searchString != "" {
+		RunSearchUser(searchString)
+	} else if repo && searchString != "" {
+		RunSearchRepo(searchString)
 	} else {
-		fmt.Println("You must use an option:")
-		fmt.Println("./gitsearch -user -pattern pattern")
-		fmt.Println("./gitsearch -repo -pattern pattern")
+		CheckUsage()
 	}
 }

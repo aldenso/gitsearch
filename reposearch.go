@@ -13,8 +13,8 @@ func searchRepo(pattern string) (RespRepo, string) {
 	var data RespRepo
 	var link string
 	var url string
-	if len(*language) > 0 {
-		url = (apiUrl + "repositories?q=" + pattern + "+language:" + *language)
+	if len(language) > 0 {
+		url = (apiUrl + "repositories?q=" + pattern + "+language:" + language)
 	} else {
 		url = (apiUrl + "repositories?q=" + pattern)
 	}
@@ -98,6 +98,8 @@ func RunSearchRepo(repo string) {
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
 				os.Exit(0)
+			default:
+				fmt.Println("*** You must indicate \"Y\" or \"N\" ***")
 			}
 		}
 		lines()

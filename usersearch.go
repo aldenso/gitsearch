@@ -87,6 +87,8 @@ func RunSearchUser(user string) {
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
 				os.Exit(0)
+			default:
+				fmt.Println("*** You must indicate \"Y\" or \"N\" ***")
 			}
 		}
 		lines()
