@@ -8,11 +8,24 @@ import (
 	"os"
 )
 
+// function to print results values
+func (i *ItemUser) ShowUserResult() {
+	fmt.Println("User: ", i.Login)
+	fmt.Println("URL", i.Html_url)
+	fmt.Println("Score:", i.Score)
+}
+
 // function to make search for a particular user pattern
 func searchUser(pattern string) (RespUser, string) {
 	var data RespUser
 	var link string
-	url := (apiUrl + "users?q=" + pattern)
+	var url string
+	switch {
+	case len(language) > 0:
+		url = (apiUrl + "users?q=" + pattern + "+language:" + language)
+	case len(language) == 0:
+		url = (apiUrl + "users?q=" + pattern)
+	}
 	lines()
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
@@ -60,9 +73,7 @@ func RunSearchUser(user string) {
 	if items.Count > 0 {
 		for _, item := range items.Items {
 			lines()
-			fmt.Println("User:", item.Login)
-			fmt.Println("URL:", item.Html_url)
-			fmt.Println("Score:", item.Score)
+			item.ShowUserResult()
 		}
 		// loop over next page url
 		for len(Link) > 0 {
@@ -80,9 +91,7 @@ func RunSearchUser(user string) {
 				items, Link = NextUrlUser(nexturl)
 				for _, item := range items.Items {
 					lines()
-					fmt.Println("User: ", item.Login)
-					fmt.Println("URL", item.Html_url)
-					fmt.Println("Score:", item.Score)
+					item.ShowUserResult()
 				}
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")

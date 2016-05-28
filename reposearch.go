@@ -8,14 +8,27 @@ import (
 	"os"
 )
 
+// function to print results values
+func (i *ItemRepo) ShowRepoResult() {
+	fmt.Println("Repo:", i.Name, "\t\tOwner:", i.Owner.Login)
+	fmt.Println("Description:", i.Description)
+	fmt.Println("URL:", i.Html_url)
+	fmt.Println("Language:", i.Language, "\t\tStars:", i.Stargazers_count)
+}
+
 // function to make search for a particular user pattern
 func searchRepo(pattern string) (RespRepo, string) {
 	var data RespRepo
 	var link string
 	var url string
-	if len(language) > 0 {
+	switch {
+	case len(language) > 0 && len(login) > 0:
+		url = (apiUrl + "repositories?q=" + pattern + "+user:" + login + "+language:" + language)
+	case len(language) > 0 && len(login) == 0:
 		url = (apiUrl + "repositories?q=" + pattern + "+language:" + language)
-	} else {
+	case len(language) == 0 && len(login) > 0:
+		url = (apiUrl + "repositories?q=" + pattern + "+user:" + login)
+	default:
 		url = (apiUrl + "repositories?q=" + pattern)
 	}
 	lines()
@@ -65,12 +78,7 @@ func RunSearchRepo(repo string) {
 	if items.Count > 0 {
 		for _, item := range items.Items {
 			lines()
-			fmt.Println("Repo:", item.Name)
-			fmt.Println("Description:", item.Description)
-			fmt.Println("URL:", item.Html_url)
-			fmt.Println("Owner:", item.Owner.Login)
-			fmt.Println("Language:", item.Language)
-			fmt.Println("Stars:", item.Stargazers_count)
+			item.ShowRepoResult()
 		}
 		// loop over next page url
 		for len(Link) > 0 {
@@ -88,12 +96,7 @@ func RunSearchRepo(repo string) {
 				items, Link = NextUrlRepo(nexturl)
 				for _, item := range items.Items {
 					lines()
-					fmt.Println("Repo:", item.Name)
-					fmt.Println("Description:", item.Description)
-					fmt.Println("URL:", item.Html_url)
-					fmt.Println("Owner:", item.Owner.Login)
-					fmt.Println("Language:", item.Language)
-					fmt.Println("Stars:", item.Stargazers_count)
+					item.ShowRepoResult()
 				}
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")

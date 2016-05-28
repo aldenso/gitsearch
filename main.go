@@ -7,20 +7,21 @@ import (
 )
 
 var (
-	apiUrl                 = "https://api.github.com/search/"
-	user, repo             bool
-	searchString, language string
+	apiUrl                        = "https://api.github.com/search/"
+	user, repo                    bool
+	searchString, language, login string
 )
 
 func init() {
-	flag.BoolVar(&user, "user", false, "search for a user, (do not use with -repo flag)")
+	flag.BoolVar(&user, "user", false, "search for a user.")
 	flag.BoolVar(&user, "u", false, "shorthand for -user")
-	flag.BoolVar(&repo, "repo", false, "indicate the pattern you are looking for")
+	flag.BoolVar(&repo, "repo", false, "indicate the pattern you are looking for (don't combine with -user|-u)")
 	flag.BoolVar(&repo, "r", false, "shorthand for -repo")
 	flag.StringVar(&searchString, "pattern", "", "indicate the pattern you are looking for")
 	flag.StringVar(&searchString, "p", "", "shorthand for -pattern")
 	flag.StringVar(&language, "lang", "", "indicate a language for search")
 	flag.StringVar(&language, "l", "", "shorthand for -lang")
+	flag.StringVar(&login, "login", "", "indicate username for search a repo search")
 }
 
 func CheckUsage() {
@@ -32,7 +33,7 @@ func CheckUsage() {
 }
 
 func lines() {
-	fmt.Println("===============================================================")
+	fmt.Println("===============================================================================")
 }
 
 // function go get the url from Link in header
