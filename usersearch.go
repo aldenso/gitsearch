@@ -8,23 +8,23 @@ import (
 	"os"
 )
 
-// function to print results values
+//ShowUserResult function to print results values
 func (i *ItemUser) ShowUserResult() {
 	fmt.Println("User: ", i.Login)
-	fmt.Println("URL", i.Html_url)
+	fmt.Println("URL:", i.HTMLURL)
 	fmt.Println("Score:", i.Score)
 }
 
-// function to make search for a particular user pattern
-func searchUser(pattern string) (RespUser, string) {
+//searchUser function to make search for a particular user pattern
+func searchUser(pattern string) RespUser {
 	var data RespUser
-	var link string
+	var linkHeader string
 	var url string
 	switch {
 	case len(language) > 0:
-		url = (apiUrl + "users?q=" + pattern + "+language:" + language)
+		url = (apiURL + "users?q=" + pattern + "+language:" + language)
 	case len(language) == 0:
-		url = (apiUrl + "users?q=" + pattern)
+		url = (apiURL + "users?q=" + pattern)
 	}
 	lines()
 	fmt.Println("using url:", url)
@@ -33,20 +33,21 @@ func searchUser(pattern string) (RespUser, string) {
 		log.Fatal(err)
 	}
 	defer response.Body.Close()
-	if link = response.Header.Get("Link"); len(link) == 0 {
+	if linkHeader = response.Header.Get("Link"); len(linkHeader) == 0 {
 		fmt.Println("Showing results in one page")
 	}
+	data.NextURL = Regexp(linkHeader)
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return data, link
+	return data
 }
 
-// function to get next item and maybe next page url
-func NextUrlUser(url string) (RespUser, string) {
+// function to continue with next url
+func continueSearchUser(url string) RespUser {
 	var data RespUser
-	var link string
+	var linkHeader string
 	lines()
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
@@ -54,20 +55,20 @@ func NextUrlUser(url string) (RespUser, string) {
 		log.Fatal(err)
 	}
 	defer response.Body.Close()
-	if link = response.Header.Get("Link"); len(link) == 0 {
-		lines()
+	if linkHeader = response.Header.Get("Link"); len(linkHeader) == 0 {
 		fmt.Println("No more results")
 	}
+	data.NextURL = Regexp(linkHeader)
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return data, link
+	return data
 }
 
-// function to run the main process for user search
+//RunSearchUser function to run the main process for user search
 func RunSearchUser(user string) {
-	items, Link := searchUser(user)
+	items := searchUser(user)
 	lines()
 	fmt.Println("Results Count:", items.Count)
 	if items.Count > 0 {
@@ -76,10 +77,9 @@ func RunSearchUser(user string) {
 			item.ShowUserResult()
 		}
 		// loop over next page url
-		for len(Link) > 0 {
-			nexturl := Regexp(Link)
+		for items.NextURL != "" {
 			lines()
-			fmt.Println("Next Page ==>", nexturl)
+			fmt.Println("Next Page ==>", items.NextURL)
 			var answer string
 			fmt.Println("Go to next page? (Y/N):")
 			n, err := fmt.Scanf("%s\n", &answer)
@@ -88,7 +88,7 @@ func RunSearchUser(user string) {
 			}
 			switch {
 			case answer == "Y" || answer == "y":
-				items, Link = NextUrlUser(nexturl)
+				items = continueSearchUser(items.NextURL)
 				for _, item := range items.Items {
 					lines()
 					item.ShowUserResult()
@@ -101,7 +101,7 @@ func RunSearchUser(user string) {
 			}
 		}
 		lines()
-		fmt.Println("No more results")
+		//fmt.Println("No more results")
 		os.Exit(0)
 	}
 }

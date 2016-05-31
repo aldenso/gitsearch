@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	apiUrl                        = "https://api.github.com/search/"
+	apiURL                        = "https://api.github.com/search/"
 	user, repo                    bool
 	searchString, language, login string
 )
@@ -24,7 +24,7 @@ func init() {
 	flag.StringVar(&login, "login", "", "indicate username for search a repo search")
 }
 
-func CheckUsage() {
+func checkUsage() {
 	fmt.Println("You must use an option:")
 	fmt.Println("./gitsearch -user -pattern pattern")
 	fmt.Println("./gitsearch -repo -pattern pattern")
@@ -36,7 +36,7 @@ func lines() {
 	fmt.Println("===============================================================================")
 }
 
-// function go get the url from Link in header
+//Regexp function go get the url from Link in header
 func Regexp(input string) string {
 	var url string
 	re1 := regexp.MustCompile("next")
@@ -56,6 +56,6 @@ func main() {
 	} else if repo && searchString != "" {
 		RunSearchRepo(searchString)
 	} else {
-		CheckUsage()
+		checkUsage()
 	}
 }
