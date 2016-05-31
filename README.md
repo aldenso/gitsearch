@@ -29,7 +29,7 @@ Show Program .
       search for a user.
 
 
-Search for a repos for username "aldenso".
+Search for repos for username "aldenso".
 
     $ ./gitsearch -r -login aldenso
     ===============================================================================
