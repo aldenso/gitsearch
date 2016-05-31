@@ -24,7 +24,7 @@ type ItemUser struct {
 	OrganizationsURL  string  `json:"organizations_url"`
 	ReposURL          string  `json:"repos_url"`
 	EventsURL         string  `json:"events_url"`
-	ReceivedEventsULR string  `json:"received_events_url"`
+	ReceivedEventsURL string  `json:"received_events_url"`
 	Type              string  `json:"type"`
 	SiteAdmin         bool    `json:"site_admin"`
 	Score             float64 `json:"score"`

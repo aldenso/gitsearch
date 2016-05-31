@@ -53,8 +53,13 @@ func main() {
 	flag.Parse()
 	if user && searchString != "" {
 		RunSearchUser(searchString)
-	} else if repo && searchString != "" {
-		RunSearchRepo(searchString)
+	} else if repo {
+		switch {
+		case searchString == "" && login == "":
+			checkUsage()
+		case searchString == "" && login != "":
+			RunSearchRepo(searchString)
+		}
 	} else {
 		checkUsage()
 	}

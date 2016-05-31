@@ -16,7 +16,7 @@ Show Program .
     -lang string
       indicate a language for search
     -login string
-      indicate username for search a repo search
+      indicate username for a repo search
     -p string
       shorthand for -pattern
     -pattern string
@@ -29,7 +29,27 @@ Show Program .
       search for a user.
 
 
-Search for a repo with pattern "go" associated with a username "aldenso".
+Search for a repos for username "aldenso".
+
+    $ ./gitsearch -r -login aldenso
+    ===============================================================================
+    using url: https://api.github.com/search/repositories?q=+user:aldenso
+    Showing results in one page
+    ===============================================================================
+    Results Count: 12
+    ===============================================================================
+    .
+    .
+    .
+    ===============================================================================
+    Repo: pyconverter 		Owner: aldenso
+    Description: Utility to convert units to different units and measurement systems.
+    URL: https://github.com/aldenso/pyconverter
+    Language: Python 		Stars: 0
+    ===============================================================================
+
+
+Search for repos with pattern "go" associated with a username "aldenso".
 
     $ ./gitsearch -r -p go -login aldenso
     ===============================================================================
