@@ -48,6 +48,24 @@ Search for repos for username "aldenso".
     Language: Python 		Stars: 0
     ===============================================================================
 
+Search for repos with pattern "gitsearch".
+
+    $ ./gitsearch -r -p gitsearch
+    ===============================================================================
+    using url: https://api.github.com/search/repositories?q=gitsearch
+    Showing results in one page
+    ===============================================================================
+    Results Count: 26
+    ===============================================================================
+    Repo: gitsearch 		Owner: aldenso
+    Description: Small golang program to help you search for users or repos in github
+    URL: https://github.com/aldenso/gitsearch
+    Language: Go 		Stars: 2
+    ===============================================================================
+    .
+    .
+    .
+
 
 Search for repos with pattern "go" associated with a username "aldenso".
 

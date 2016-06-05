@@ -59,6 +59,8 @@ func main() {
 			checkUsage()
 		case searchString == "" && login != "":
 			RunSearchRepo(searchString)
+		case searchString != "":
+			RunSearchRepo(searchString)
 		}
 	} else {
 		checkUsage()
