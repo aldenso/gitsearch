@@ -17,19 +17,19 @@ func (i *ItemRepo) showRepoResult() {
 }
 
 //searchRepo function to make search for a particular user pattern
-func searchRepo(pattern string) RespRepo {
+func searchRepo(pattern, paging string) RespRepo {
 	var data RespRepo
 	var linkHeader string
 	var url string
 	switch {
 	case len(language) > 0 && len(login) > 0:
-		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "+language:" + language)
+		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "+language:" + language + "&per_page=" + paging)
 	case len(language) > 0 && len(login) == 0:
-		url = (apiURL + "repositories?q=" + pattern + "+language:" + language)
+		url = (apiURL + "repositories?q=" + pattern + "+language:" + language + "&per_page=" + paging)
 	case len(language) == 0 && len(login) > 0:
-		url = (apiURL + "repositories?q=" + pattern + "+user:" + login)
+		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "&per_page=" + paging)
 	default:
-		url = (apiURL + "repositories?q=" + pattern)
+		url = (apiURL + "repositories?q=" + pattern + "&per_page=" + paging)
 	}
 	lines()
 	fmt.Println("using url:", url)
@@ -72,8 +72,8 @@ func continueSearchRepo(url string) RespRepo {
 }
 
 //RunSearchRepo function to run the main process for user search
-func RunSearchRepo(repo string) {
-	items := searchRepo(repo)
+func RunSearchRepo(repo, paging string) {
+	items := searchRepo(repo, paging)
 	lines()
 	fmt.Println("Results Count:", items.Count)
 	if items.Count > 0 {

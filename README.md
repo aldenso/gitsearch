@@ -11,22 +11,25 @@ Show Program .
 
     $ ./gitsearch -h
     Usage of ./gitsearch:
-    -l string
-      shorthand for -lang
-    -lang string
-      indicate a language for search
-    -login string
-      indicate username for a repo search
-    -p string
-      shorthand for -pattern
-    -pattern string
-      indicate the pattern you are looking for
-    -r	shorthand for -repo
-    -repo
-      indicate the pattern you are looking for (don't combine with -user|-u)
-    -u	shorthand for -user
-    -user
-      search for a user.
+      -l string
+        	shorthand for -lang.
+      -lang string
+        	indicate a language for search.
+      -login string
+        	indicate username for search a repo search.
+      -p string
+        	shorthand for -pattern.
+      -paging int
+        	set per page limit. (default 100)
+      -pattern string
+        	indicate the pattern you are looking for.
+      -r	shorthand for -repo.
+      -repo
+        	indicate the pattern you are looking for (don't combine with -user|-u).
+      -u	shorthand for -user.
+      -user
+        	search for a user.
+
 
 
 Search for repos for username "aldenso".
@@ -65,6 +68,37 @@ Search for repos with pattern "gitsearch".
     .
     .
     .
+
+Search for repos with pattern "gitsearch" with paging equals 4.
+
+    $ ./gitsearch -r -p gitsearch -paging=4
+    ===============================================================================
+    using url: https://api.github.com/search/repositories?q=gitsearch&per_page=4
+    ===============================================================================
+    Results Count: 38
+    ===============================================================================
+    Repo: gitsearch 		Owner: aldenso
+    Description: Small golang program to help you search for users or repos in github
+    URL: https://github.com/aldenso/gitsearch
+    Language: Go 		Stars: 2
+    ===============================================================================
+    Repo: gitSearch 		Owner: Zivi
+    Description:
+    URL: https://github.com/Zivi/gitSearch
+    Language: JavaScript 		Stars: 0
+    ===============================================================================
+    Repo: gitsearch 		Owner: skylerzhang
+    Description: learning command-line utilities with Node.js
+    URL: https://github.com/skylerzhang/gitsearch
+    Language: JavaScript 		Stars: 0
+    ===============================================================================
+    Repo: GitSearch 		Owner: shayaans
+    Description: Search for GitProjects by User
+    URL: https://github.com/shayaans/GitSearch
+    Language: HTML 		Stars: 0
+    ===============================================================================
+    Next Page ==> https://api.github.com/search/repositories?q=gitsearch&per_page=4&page=2
+    Go to next page? (Y/N):
 
 
 Search for repos with pattern "go" associated with a username "aldenso".

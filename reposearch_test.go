@@ -2,13 +2,15 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 )
 
 func Test_searchRepo(t *testing.T) {
+	perpage := strconv.Itoa(paging)
 	pattern := "time"
 	language, login = "Go", "golang"
-	resp := searchRepo(pattern)
+	resp := searchRepo(pattern, perpage)
 	if resp.Count != 1 {
 		fmt.Printf("Using pattern '%s', language '%s', and login '%s'", pattern, language, login)
 		t.Errorf("Count mismatch, expected '1', got '%d'", resp.Count)
