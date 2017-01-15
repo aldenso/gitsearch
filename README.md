@@ -16,7 +16,7 @@ Show Program .
       -lang string
         	indicate a language for search.
       -login string
-        	indicate username for search a repo search.
+        	indicate username for a repo search.
       -p string
         	shorthand for -pattern.
       -paging int

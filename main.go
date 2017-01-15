@@ -23,12 +23,14 @@ func init() {
 	flag.StringVar(&searchString, "p", "", "shorthand for -pattern.")
 	flag.StringVar(&language, "lang", "", "indicate a language for search.")
 	flag.StringVar(&language, "l", "", "shorthand for -lang.")
-	flag.StringVar(&login, "login", "", "indicate username for search a repo search.")
+	flag.StringVar(&login, "login", "", "indicate username for a repo search.")
 	flag.IntVar(&paging, "paging", 100, "set per page limit.")
 }
 
 func checkUsage() {
 	fmt.Println("You must use an option:")
+	fmt.Println("./gitsearch -help")
+	fmt.Println("./gitsearch -h")
 	fmt.Println("./gitsearch -user -pattern pattern")
 	fmt.Println("./gitsearch -repo -pattern pattern")
 	fmt.Println("./gitsearch -u -p pattern")
