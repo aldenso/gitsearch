@@ -35,6 +35,7 @@ func checkUsage() {
 	fmt.Println("./gitsearch -repo -pattern pattern")
 	fmt.Println("./gitsearch -u -p pattern")
 	fmt.Println("./gitsearch -r -p pattern")
+	fmt.Println("./gitsearch -r -p pattern -l language -login username")
 	fmt.Println("./gitsearch -r -p pattern -paging=10")
 }
 

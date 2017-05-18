@@ -129,6 +129,32 @@ Search for repos with pattern "go" associated with a username "aldenso".
     No more results
 
 
+Search for repos with pattern "zfs" associated with a username "aldenso" and language python.
+
+    $ ./gitsearch -r -p zfs -l python -login aldenso
+    ===============================================================================
+    using url: https://api.github.com/search/repositories?q=zfs+user:aldenso+language:python&per_page=100
+    Showing results in one page
+    ===============================================================================
+    Results Count: 3
+    ===============================================================================
+    Repo: zfssa-scripts             Owner: aldenso
+    Description: My scripts for ZFS Storage Appliance
+    URL: https://github.com/aldenso/zfssa-scripts
+    Language: Python                Stars: 0
+    ===============================================================================
+    Repo: prtgZFSSAmetrics          Owner: aldenso
+    Description: PRTG Python Advanced script to get metrics from analytics datasets using ZFSSA Rest api
+    URL: https://github.com/aldenso/prtgZFSSAmetrics
+    Language: Python                Stars: 1
+    ===============================================================================
+    Repo: prtgZFSSAhealth           Owner: aldenso
+    Description: PRTG Python Advanced script to get health status from ZFSSA using Rest service.
+    URL: https://github.com/aldenso/prtgZFSSAhealth
+    Language: Python                Stars: 0
+    ===============================================================================
+
+
 Search for users with pattern "alde".
 
     $ ./gitsearch -u -p alde
