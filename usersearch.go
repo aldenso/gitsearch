@@ -6,13 +6,19 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 //ShowUserResult function to print results values
-func (i *ItemUser) ShowUserResult() {
-	fmt.Println("User: ", i.Login)
-	fmt.Println("URL:", i.HTMLURL)
-	fmt.Println("Score:", i.Score)
+func (results *RespUser) ShowUserResult() {
+	var output []string
+	count := fmt.Sprintf("%s\nResults Count: %v\n%s", line, results.Count, line)
+	output = append(output, count)
+	for _, i := range results.Items {
+		match := fmt.Sprintf("User: %v\nURL: %v\nScore: %v\n%s", i.Login, i.HTMLURL, i.Score, line)
+		output = append(output, match)
+	}
+	pager(strings.Join(output, "\n"))
 }
 
 //searchUser function to make search for a particular user pattern
@@ -69,13 +75,8 @@ func continueSearchUser(url string) RespUser {
 //RunSearchUser function to run the main process for user search
 func RunSearchUser(user, paging string) {
 	items := searchUser(user, paging)
-	fmt.Println(line)
-	fmt.Println("Results Count:", items.Count)
 	if items.Count > 0 {
-		for _, item := range items.Items {
-			fmt.Println(line)
-			item.ShowUserResult()
-		}
+		items.ShowUserResult()
 		// loop over next page url
 		for items.NextURL != "" {
 			fmt.Println(line)
@@ -89,10 +90,7 @@ func RunSearchUser(user, paging string) {
 			switch {
 			case answer == "Y" || answer == "y":
 				items = continueSearchUser(items.NextURL)
-				for _, item := range items.Items {
-					fmt.Println(line)
-					item.ShowUserResult()
-				}
+				items.ShowUserResult()
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
 				os.Exit(0)

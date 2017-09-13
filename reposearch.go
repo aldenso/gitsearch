@@ -12,6 +12,8 @@ import (
 //showRepoResult function to print results values
 func (results *RespRepo) showRepoResult() {
 	var output []string
+	count := fmt.Sprintf("%s\nResults Count: %v\n%s", line, results.Count, line)
+	output = append(output, count)
 	for _, i := range results.Items {
 		match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s",
 			i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, line)
@@ -78,8 +80,6 @@ func continueSearchRepo(url string) RespRepo {
 //RunSearchRepo function to run the main process for user search
 func RunSearchRepo(repo, paging string) {
 	items := searchRepo(repo, paging)
-	fmt.Println(line)
-	fmt.Println("Results Count:", items.Count)
 	if items.Count > 0 {
 		items.showRepoResult()
 		// loop over next page url
@@ -96,10 +96,6 @@ func RunSearchRepo(repo, paging string) {
 			case answer == "Y" || answer == "y":
 				items = continueSearchRepo(items.NextURL)
 				items.showRepoResult()
-				/*for _, item := range items.Items {
-					lines()
-					item.showRepoResult()
-				}*/
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
 				os.Exit(0)
@@ -108,7 +104,6 @@ func RunSearchRepo(repo, paging string) {
 			}
 		}
 		fmt.Println(line)
-		//fmt.Println("No more results")
 		os.Exit(0)
 	}
 }
