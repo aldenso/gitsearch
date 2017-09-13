@@ -26,7 +26,7 @@ func searchUser(pattern, paging string) RespUser {
 	case len(language) == 0:
 		url = (apiURL + "users?q=" + pattern + "&per_page=" + paging)
 	}
-	lines()
+	fmt.Println(line)
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
 	if err != nil {
@@ -48,7 +48,7 @@ func searchUser(pattern, paging string) RespUser {
 func continueSearchUser(url string) RespUser {
 	var data RespUser
 	var linkHeader string
-	lines()
+	fmt.Println(line)
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
 	if err != nil {
@@ -69,16 +69,16 @@ func continueSearchUser(url string) RespUser {
 //RunSearchUser function to run the main process for user search
 func RunSearchUser(user, paging string) {
 	items := searchUser(user, paging)
-	lines()
+	fmt.Println(line)
 	fmt.Println("Results Count:", items.Count)
 	if items.Count > 0 {
 		for _, item := range items.Items {
-			lines()
+			fmt.Println(line)
 			item.ShowUserResult()
 		}
 		// loop over next page url
 		for items.NextURL != "" {
-			lines()
+			fmt.Println(line)
 			fmt.Println("Next Page ==>", items.NextURL)
 			var answer string
 			fmt.Println("Go to next page? (Y/N):")
@@ -90,7 +90,7 @@ func RunSearchUser(user, paging string) {
 			case answer == "Y" || answer == "y":
 				items = continueSearchUser(items.NextURL)
 				for _, item := range items.Items {
-					lines()
+					fmt.Println(line)
 					item.ShowUserResult()
 				}
 			case answer == "N" || answer == "n":
@@ -100,7 +100,7 @@ func RunSearchUser(user, paging string) {
 				fmt.Println("*** You must indicate \"Y\" or \"N\" ***")
 			}
 		}
-		lines()
+		fmt.Println(line)
 		//fmt.Println("No more results")
 		os.Exit(0)
 	}

@@ -6,14 +6,18 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 //showRepoResult function to print results values
-func (i *ItemRepo) showRepoResult() {
-	fmt.Println("Repo:", i.Name, "\t\tOwner:", i.Owner.Login)
-	fmt.Println("Description:", i.Description)
-	fmt.Println("URL:", i.HTMLURL)
-	fmt.Println("Language:", i.Language, "\t\tStars:", i.StargazersCount)
+func (results *RespRepo) showRepoResult() {
+	var output []string
+	for _, i := range results.Items {
+		match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s",
+			i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, line)
+		output = append(output, match)
+	}
+	pager(strings.Join(output, "\n"))
 }
 
 //searchRepo function to make search for a particular user pattern
@@ -31,7 +35,7 @@ func searchRepo(pattern, paging string) RespRepo {
 	default:
 		url = (apiURL + "repositories?q=" + pattern + "&per_page=" + paging)
 	}
-	lines()
+	fmt.Println(line)
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
 	if err != nil {
@@ -53,7 +57,7 @@ func searchRepo(pattern, paging string) RespRepo {
 func continueSearchRepo(url string) RespRepo {
 	var data RespRepo
 	var linkHeader string
-	lines()
+	fmt.Println(line)
 	fmt.Println("using url:", url)
 	response, err := http.Get(url)
 	if err != nil {
@@ -74,16 +78,13 @@ func continueSearchRepo(url string) RespRepo {
 //RunSearchRepo function to run the main process for user search
 func RunSearchRepo(repo, paging string) {
 	items := searchRepo(repo, paging)
-	lines()
+	fmt.Println(line)
 	fmt.Println("Results Count:", items.Count)
 	if items.Count > 0 {
-		for _, item := range items.Items {
-			lines()
-			item.showRepoResult()
-		}
+		items.showRepoResult()
 		// loop over next page url
 		for items.NextURL != "" {
-			lines()
+			fmt.Println(line)
 			fmt.Println("Next Page ==>", items.NextURL)
 			var answer string
 			fmt.Println("Go to next page? (Y/N):")
@@ -94,10 +95,11 @@ func RunSearchRepo(repo, paging string) {
 			switch {
 			case answer == "Y" || answer == "y":
 				items = continueSearchRepo(items.NextURL)
-				for _, item := range items.Items {
+				items.showRepoResult()
+				/*for _, item := range items.Items {
 					lines()
 					item.showRepoResult()
-				}
+				}*/
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
 				os.Exit(0)
@@ -105,7 +107,7 @@ func RunSearchRepo(repo, paging string) {
 				fmt.Println("*** You must indicate \"Y\" or \"N\" ***")
 			}
 		}
-		lines()
+		fmt.Println(line)
 		//fmt.Println("No more results")
 		os.Exit(0)
 	}

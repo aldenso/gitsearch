@@ -3,8 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"os"
+	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 var (
@@ -12,6 +16,7 @@ var (
 	user, repo                    bool
 	paging                        int
 	searchString, language, login string
+	line                          string = "==============================================================================="
 )
 
 func init() {
@@ -39,10 +44,6 @@ func checkUsage() {
 	fmt.Println("./gitsearch -r -p pattern -paging=10")
 }
 
-func lines() {
-	fmt.Println("===============================================================================")
-}
-
 //Regexp function go get the url from Link in header
 func Regexp(input string) string {
 	var url string
@@ -54,6 +55,16 @@ func Regexp(input string) string {
 		return url
 	}
 	return url
+}
+
+func pager(input string) {
+	cmd := exec.Command("/usr/bin/less")
+	cmd.Stdin = strings.NewReader(input)
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
