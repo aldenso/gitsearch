@@ -58,7 +58,11 @@ func Regexp(input string) string {
 }
 
 func pager(input string) {
-	cmd := exec.Command("/usr/bin/less")
+	pager := os.Getenv("PAGER")
+	if pager == "" {
+		pager = "more"
+	}
+	cmd := exec.Command(pager)
 	cmd.Stdin = strings.NewReader(input)
 	cmd.Stdout = os.Stdout
 	err := cmd.Run()
