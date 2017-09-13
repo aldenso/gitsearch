@@ -60,7 +60,12 @@ func Regexp(input string) string {
 func pager(input string) {
 	pager := os.Getenv("PAGER")
 	if pager == "" {
-		pager = "more"
+		less := "/usr/bin/less"
+		if _, err := os.Stat(less); err == nil {
+			pager = less
+		} else {
+			pager = "more"
+		}
 	}
 	cmd := exec.Command(pager)
 	cmd.Stdin = strings.NewReader(input)
