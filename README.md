@@ -7,6 +7,19 @@ Works with GitHub API v3.
 
 Usage:
 
+    $./gitsearch 
+    You must use an option like:
+    ./gitsearch -help
+    ./gitsearch -h
+    ./gitsearch -user -pattern pattern
+    ./gitsearch -repo -pattern pattern
+    ./gitsearch -u -p pattern
+    ./gitsearch -r -login username
+    ./gitsearch -r -p pattern
+    ./gitsearch -r -p pattern -l language -login username
+    ./gitsearch -r -p pattern -paging=10
+
+
 Show Program .
 
     $ ./gitsearch -h
