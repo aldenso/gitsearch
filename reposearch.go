@@ -115,13 +115,18 @@ func RunSearchRepo(repo, paging string) {
 						clone = v.HTMLURL
 					}
 				}
-				fmt.Println("Cloning repo ", clone)
-				cmd := exec.Command("git", "clone", clone)
-				cmd.Stdout = os.Stdout
-				cmd.Stderr = os.Stderr
-				err := cmd.Run()
-				if err != nil {
-					println(err)
+				if clone == "" {
+					fmt.Printf("%s\n--- Option no available ---\n%s\n", linebig, linebig)
+				} else {
+					fmt.Printf("%s\n+++ Cloning repo %s +++\n%s\n", linebig, clone, linebig)
+					cmd := exec.Command("git", "clone", clone)
+					cmd.Stdout = os.Stdout
+					cmd.Stderr = os.Stderr
+					cmd.Run()
+					fmt.Println(line)
+					//if err != nil {
+					//	println(err)
+					//}
 				}
 
 				fmt.Println("*** You must indicate \"Y\", \"N\" or choose the # of a repo to clone ***")
