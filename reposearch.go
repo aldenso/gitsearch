@@ -6,20 +6,29 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"strconv"
 	"strings"
 )
 
 //showRepoResult function to print results values
-func (results *RespRepo) showRepoResult() {
+func (results *RespRepo) showRepoResult() ItemChoices {
 	var output []string
+	var items ItemChoices
+	var item ItemChoice
 	count := fmt.Sprintf("%s\nResults Count: %v\n%s", line, results.Count, line)
 	output = append(output, count)
+	counter := 0
 	for _, i := range results.Items {
-		match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s",
-			i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, line)
+		item.ID, item.HTMLURL = counter, i.HTMLURL
+		items.Items = append(items.Items, item)
+		match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
+			i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
 		output = append(output, match)
+		counter++
 	}
 	pager(strings.Join(output, "\n"))
+	return items
 }
 
 //searchRepo function to make search for a particular user pattern
@@ -81,13 +90,13 @@ func continueSearchRepo(url string) RespRepo {
 func RunSearchRepo(repo, paging string) {
 	items := searchRepo(repo, paging)
 	if items.Count > 0 {
-		items.showRepoResult()
+		choices := items.showRepoResult()
 		// loop over next page url
 		for items.NextURL != "" {
 			fmt.Println(line)
 			fmt.Println("Next Page ==>", items.NextURL)
 			var answer string
-			fmt.Println("Go to next page? (Y/N):")
+			fmt.Println("Git Clone repo # or Go to next page? (Y/N):")
 			n, err := fmt.Scanf("%s\n", &answer)
 			if err != nil {
 				fmt.Println(n, err)
@@ -100,7 +109,22 @@ func RunSearchRepo(repo, paging string) {
 				fmt.Println("Stopping")
 				os.Exit(0)
 			default:
-				fmt.Println("*** You must indicate \"Y\" or \"N\" ***")
+				var clone string
+				for _, v := range choices.Items {
+					if answer == strconv.Itoa(v.ID) {
+						clone = v.HTMLURL
+					}
+				}
+				fmt.Println("Cloning repo ", clone)
+				cmd := exec.Command("git", "clone", clone)
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				err := cmd.Run()
+				if err != nil {
+					println(err)
+				}
+
+				fmt.Println("*** You must indicate \"Y\", \"N\" or choose the # of a repo to clone ***")
 			}
 		}
 		fmt.Println(line)

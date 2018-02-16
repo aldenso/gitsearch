@@ -103,3 +103,14 @@ type ItemRepo struct {
 	DefaultBranch    string    `json:"default_branch"`
 	Score            float64   `json:"score"`
 }
+
+//ItemChoice function to map an identifier with a url to clone.
+type ItemChoice struct {
+	ID      int
+	HTMLURL string
+}
+
+//ItemChoices function to map a list of items to choose.
+type ItemChoices struct {
+	Items []ItemChoice
+}
