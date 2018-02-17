@@ -52,6 +52,8 @@ Usage of gitsearch:
         search for a user.
 ```
 
+## Repo operations
+
 Search repos for username "aldenso".
 
 ```sh
@@ -115,7 +117,7 @@ Language: JavaScript            Stars: 0
 .
 ```
 
-Search repos with pattern "gitsearch" and paging equals 4 (paging is convenient for smaller show groups and while paging you'll have the possibility to clone a repo indicating the given number in the show).
+Search repos with pattern "gitsearch" and paging equals 4 (paging is convenient for smaller show groups and **while paging you'll have the possibility to clone a repo** indicating the given number when asked to continue to next link).
 
 ```sh
 gitsearch -r -p gitsearch -paging=4
@@ -223,6 +225,8 @@ Language: Python                Stars: 1
 to Git Clone Choose: 3
 ===============================================================================
 ```
+
+## User operations
 
 Search users with pattern "alde".
 
