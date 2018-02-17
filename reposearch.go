@@ -19,24 +19,13 @@ func (results *RespRepo) showRepoResult() ItemChoices {
 	count := fmt.Sprintf("%s\nResults Count: %v\n%s", line, results.Count, line)
 	output = append(output, count)
 	counter := 0
-	if paging < results.Count {
-		for _, i := range results.Items {
-			item.ID, item.HTMLURL = counter, i.HTMLURL
-			items.Items = append(items.Items, item)
-			match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
-				i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
-			output = append(output, match)
-			counter++
-		}
-	} else {
-		for _, i := range results.Items {
-			item.ID, item.HTMLURL = counter, i.HTMLURL
-			items.Items = append(items.Items, item)
-			match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s",
-				i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, line)
-			output = append(output, match)
-			counter++
-		}
+	for _, i := range results.Items {
+		item.ID, item.HTMLURL = counter, i.HTMLURL
+		items.Items = append(items.Items, item)
+		match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
+			i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
+		output = append(output, match)
+		counter++
 	}
 	pager(strings.Join(output, "\n"))
 	return items
@@ -138,8 +127,40 @@ func RunSearchRepo(repo, paging string) {
 					cmd.Run()
 					fmt.Println(line)
 				}
+			}
+		}
+		if items.NextURL == "" {
 
-				fmt.Println("*** You must indicate \"Y\", \"N\", \"S\" (show again) or choose the # of a repo to clone ***")
+			fmt.Println(line)
+			var answer string
+			fmt.Println("Git Clone repo #, show or quit? (#/S/Q):")
+			n, err := fmt.Scanf("%s\n", &answer)
+			if err != nil {
+				fmt.Println(n, err)
+			}
+			switch {
+			case answer == "Q" || answer == "q":
+				fmt.Println("Stopping")
+				os.Exit(0)
+			case answer == "S" || answer == "s":
+				items.showRepoResult()
+			default:
+				var clone string
+				for _, v := range choices.Items {
+					if answer == strconv.Itoa(v.ID) {
+						clone = v.HTMLURL
+					}
+				}
+				if clone == "" {
+					fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
+				} else {
+					fmt.Printf("%s\n+++ Cloning repo %s +++\n%s\n", linebig, clone, linebig)
+					cmd := exec.Command("git", "clone", clone)
+					cmd.Stdout = os.Stdout
+					cmd.Stderr = os.Stderr
+					cmd.Run()
+					fmt.Println(line)
+				}
 			}
 		}
 		fmt.Println(line)
