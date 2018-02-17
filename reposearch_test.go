@@ -65,4 +65,12 @@ func Test_showRepoResult(t *testing.T) {
 			t.Errorf("showRepoResult wrong, expected ID == '0' HTMLURL == 'http://notfound.com', but got '%d' and '%s'", v.ID, v.HTMLURL)
 		}
 	}
+	paging = 0
+	resultpaginglow := requests.showRepoResult()
+	for _, v := range resultpaginglow.Items {
+		if v.ID != 0 || v.HTMLURL != "http://notfound.com" {
+			t.Errorf("showRepoResult wrong, expected ID == '0' HTMLURL == 'http://notfound.com', but got '%d' and '%s'", v.ID, v.HTMLURL)
+		}
+	}
+	paging = 100 //return to default
 }
