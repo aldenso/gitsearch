@@ -108,6 +108,8 @@ func RunSearchRepo(repo, paging string) {
 			case answer == "N" || answer == "n":
 				fmt.Println("Stopping")
 				os.Exit(0)
+			case answer == "S" || answer == "s":
+				items.showRepoResult()
 			default:
 				var clone string
 				for _, v := range choices.Items {
@@ -116,7 +118,7 @@ func RunSearchRepo(repo, paging string) {
 					}
 				}
 				if clone == "" {
-					fmt.Printf("%s\n--- Option no available ---\n%s\n", linebig, linebig)
+					fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
 				} else {
 					fmt.Printf("%s\n+++ Cloning repo %s +++\n%s\n", linebig, clone, linebig)
 					cmd := exec.Command("git", "clone", clone)
@@ -124,12 +126,9 @@ func RunSearchRepo(repo, paging string) {
 					cmd.Stderr = os.Stderr
 					cmd.Run()
 					fmt.Println(line)
-					//if err != nil {
-					//	println(err)
-					//}
 				}
 
-				fmt.Println("*** You must indicate \"Y\", \"N\" or choose the # of a repo to clone ***")
+				fmt.Println("*** You must indicate \"Y\", \"N\", \"S\" (show again) or choose the # of a repo to clone ***")
 			}
 		}
 		fmt.Println(line)
