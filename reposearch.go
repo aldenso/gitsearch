@@ -19,13 +19,24 @@ func (results *RespRepo) showRepoResult() ItemChoices {
 	count := fmt.Sprintf("%s\nResults Count: %v\n%s", line, results.Count, line)
 	output = append(output, count)
 	counter := 0
-	for _, i := range results.Items {
-		item.ID, item.HTMLURL = counter, i.HTMLURL
-		items.Items = append(items.Items, item)
-		match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
-			i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
-		output = append(output, match)
-		counter++
+	if paging < results.Count {
+		for _, i := range results.Items {
+			item.ID, item.HTMLURL = counter, i.HTMLURL
+			items.Items = append(items.Items, item)
+			match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
+				i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
+			output = append(output, match)
+			counter++
+		}
+	} else {
+		for _, i := range results.Items {
+			item.ID, item.HTMLURL = counter, i.HTMLURL
+			items.Items = append(items.Items, item)
+			match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s",
+				i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, line)
+			output = append(output, match)
+			counter++
+		}
 	}
 	pager(strings.Join(output, "\n"))
 	return items
