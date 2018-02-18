@@ -62,20 +62,30 @@ func Regexp(input string) string {
 
 func pager(input string) {
 	pager := os.Getenv("PAGER")
+	less := "/usr/bin/less"
 	if pager == "" {
-		less := "/usr/bin/less"
 		if _, err := os.Stat(less); err == nil {
 			pager = less
 		} else {
 			pager = "more"
 		}
 	}
-	cmd := exec.Command(pager)
-	cmd.Stdin = strings.NewReader(input)
-	cmd.Stdout = os.Stdout
-	err := cmd.Run()
-	if err != nil {
-		log.Fatal(err)
+	if pager == less || pager == "less" {
+		cmd := exec.Command(pager, "-X")
+		cmd.Stdin = strings.NewReader(input)
+		cmd.Stdout = os.Stdout
+		err := cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		cmd := exec.Command(pager)
+		cmd.Stdin = strings.NewReader(input)
+		cmd.Stdout = os.Stdout
+		err := cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
