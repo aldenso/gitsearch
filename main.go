@@ -71,7 +71,7 @@ func pager(input string) {
 		}
 	}
 	if pager == less || pager == "less" {
-		cmd := exec.Command(pager, "-X")
+		cmd := exec.Command(pager, "-X", "-F")
 		cmd.Stdin = strings.NewReader(input)
 		cmd.Stdout = os.Stdout
 		err := cmd.Run()
