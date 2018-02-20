@@ -9,6 +9,8 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 //showRepoResult function to print results values
@@ -16,14 +18,21 @@ func (results *RespRepo) showRepoResult() ItemChoices {
 	var output []string
 	var items ItemChoices
 	var item ItemChoice
+	var match string
 	count := fmt.Sprintf("%s\nResults Count: %v\n%s", line, results.Count, line)
 	output = append(output, count)
 	counter := 0
 	for _, i := range results.Items {
 		item.ID, item.HTMLURL = counter, i.HTMLURL
 		items.Items = append(items.Items, item)
-		match := fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
-			i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
+		if ospager != "more" {
+			match = fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %s\n%s",
+				color.YellowString(i.Name), i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, color.YellowString(strconv.Itoa(counter)), line)
+		} else {
+			match = fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
+				i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
+
+		}
 		output = append(output, match)
 		counter++
 	}

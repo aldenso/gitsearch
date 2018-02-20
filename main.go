@@ -19,6 +19,8 @@ var (
 	line                          = "==============================================================================="
 	linesmall                     = "-------------------------------------------------------------------------------"
 	linebig                       = "###############################################################################"
+	ospager                       string
+	less                          = "/usr/bin/less"
 )
 
 func init() {
@@ -61,17 +63,8 @@ func Regexp(input string) string {
 }
 
 func pager(input string) {
-	pager := os.Getenv("PAGER")
-	less := "/usr/bin/less"
-	if pager == "" {
-		if _, err := os.Stat(less); err == nil {
-			pager = less
-		} else {
-			pager = "more"
-		}
-	}
-	if pager == less || pager == "less" {
-		cmd := exec.Command(pager, "-X", "-F")
+	if ospager == less || ospager == "less" {
+		cmd := exec.Command(ospager, "-X", "-F")
 		cmd.Stdin = strings.NewReader(input)
 		cmd.Stdout = os.Stdout
 		err := cmd.Run()
@@ -79,12 +72,23 @@ func pager(input string) {
 			log.Fatal(err)
 		}
 	} else {
-		cmd := exec.Command(pager)
+		cmd := exec.Command(ospager)
 		cmd.Stdin = strings.NewReader(input)
 		cmd.Stdout = os.Stdout
 		err := cmd.Run()
 		if err != nil {
 			log.Fatal(err)
+		}
+	}
+}
+
+func init() {
+	ospager = os.Getenv("PAGER")
+	if ospager == "" {
+		if _, err := os.Stat(less); os.IsNotExist(err) {
+			ospager = "more"
+		} else {
+			ospager = less
 		}
 	}
 }
