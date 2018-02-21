@@ -129,7 +129,13 @@ func RunSearchRepo(repo, paging string) {
 				if clone == "" {
 					fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
 				} else {
-					fmt.Printf("%s\n+++ Cloning repo %s +++\n%s\n", linebig, clone, linebig)
+					if ospager != "more" {
+						colormsg := fmt.Sprintf("%s\n%s %s\n%s\n",
+							color.CyanString(linebig), color.CyanString("Cloning repo:"), color.MagentaString(clone), color.CyanString(linebig))
+						pager(colormsg)
+					} else {
+						fmt.Printf("%s\nCloning repo %s\n%s\n", linebig, clone, linebig)
+					}
 					cmd := exec.Command("git", "clone", clone)
 					cmd.Stdout = os.Stdout
 					cmd.Stderr = os.Stderr
@@ -163,7 +169,13 @@ func RunSearchRepo(repo, paging string) {
 				if clone == "" {
 					fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
 				} else {
-					fmt.Printf("%s\n+++ Cloning repo %s +++\n%s\n", linebig, clone, linebig)
+					if ospager != "more" {
+						colormsg := fmt.Sprintf("%s\n%s %s\n%s\n",
+							color.CyanString(linebig), color.CyanString("Cloning repo:"), color.MagentaString(clone), color.CyanString(linebig))
+						pager(colormsg)
+					} else {
+						fmt.Printf("%s\nCloning repo %s\n%s\n", linebig, clone, linebig)
+					}
 					cmd := exec.Command("git", "clone", clone)
 					cmd.Stdout = os.Stdout
 					cmd.Stderr = os.Stderr
