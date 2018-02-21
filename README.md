@@ -26,8 +26,6 @@ You must use an option like:
 ./gitsearch -r -p pattern
 ./gitsearch -r -p pattern -l language -login username
 ./gitsearch -r -p pattern -paging=10
-
-
 ```
 
 ```txt
@@ -55,6 +53,8 @@ Usage of gitsearch:
 ## Repo operations
 
 Search repos for username "aldenso".
+
+While searching for repositories **you'll have the possibility to clone a repo**, this option appears at the end of the pager and it will show you a question.
 
 ```sh
 gitsearch -r -login aldenso
@@ -117,7 +117,7 @@ Language: JavaScript            Stars: 0
 .
 ```
 
-Search repos with pattern "gitsearch" and paging equals 4 (paging is convenient for smaller show groups and **while paging you'll have the possibility to clone a repo** indicating the given number when asked to continue to next link).
+Search repos with pattern "gitsearch" and paging equals 4 (paging is convenient for smaller show groups).
 
 ```sh
 gitsearch -r -p gitsearch -paging=4
@@ -141,14 +141,23 @@ Language: Go            Stars: 3
 -------------------------------------------------------------------------------
 to Git Clone Choose: 1
 ===============================================================================
-Repo: gitSearch         Owner: Zivi
-Description:
-URL: https://github.com/Zivi/gitSearch
+Repo: GitSearch         Owner: fantasyado
+Description: GitSearch
+URL: https://github.com/fantasyado/GitSearch
+Language: Java          Stars: 0
+-------------------------------------------------------------------------------
+to Git Clone Choose: 2
+===============================================================================
+Repo: gitsearch         Owner: Satyajay
+Description: Web app to search github username profile details, developed using Angular 2.
+URL: https://github.com/Satyajay/gitsearch
 Language: JavaScript            Stars: 0
 -------------------------------------------------------------------------------
-.
-.
-.
+to Git Clone Choose: 3
+===============================================================================
+===============================================================================
+Next Page ==> https://api.github.com/search/repositories?q=gitsearch&per_page=4&page=2
+Git Clone repo # or Go to next page? (Y/N):
 ```
 
 Search repos with pattern "go", associated with a username "aldenso".
