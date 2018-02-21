@@ -20,7 +20,7 @@ var (
 	linesmall                     = "-------------------------------------------------------------------------------"
 	linebig                       = "###############################################################################"
 	ospager                       string
-	less                          = "/usr/bin/less"
+	less, lessEXE                 = "/usr/bin/less", "less.exe"
 )
 
 func init() {
@@ -63,7 +63,7 @@ func Regexp(input string) string {
 }
 
 func pager(input string) {
-	if ospager == less || ospager == "less" {
+	if ospager == less || ospager == lessEXE || ospager == "less" {
 		cmd := exec.Command(ospager, "-X", "-F", "-R")
 		cmd.Stdin = strings.NewReader(input)
 		cmd.Stdout = os.Stdout
@@ -86,7 +86,12 @@ func init() {
 	ospager = os.Getenv("PAGER")
 	if ospager == "" {
 		if _, err := os.Stat(less); os.IsNotExist(err) {
-			ospager = "more"
+			if os.Getenv("github_shell") == "true" {
+				ospager = lessEXE
+			} else {
+				ospager = "more"
+			}
+
 		} else {
 			ospager = less
 		}
