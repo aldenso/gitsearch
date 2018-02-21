@@ -64,7 +64,7 @@ func Regexp(input string) string {
 
 func pager(input string) {
 	if ospager == less || ospager == "less" {
-		cmd := exec.Command(ospager, "-X", "-F")
+		cmd := exec.Command(ospager, "-X", "-F", "-R")
 		cmd.Stdin = strings.NewReader(input)
 		cmd.Stdout = os.Stdout
 		err := cmd.Run()
