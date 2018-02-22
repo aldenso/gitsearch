@@ -52,11 +52,12 @@ func checkUsage() {
 //Regexp function go get the url from Link in header
 func Regexp(input string) string {
 	var url string
-	re1 := regexp.MustCompile("next")
-	next := re1.FindString(input)
+	re0 := regexp.MustCompile("next")
+	next := re0.FindString(input)
 	if next != "" {
-		re2 := regexp.MustCompile("[[:alnum:]]+[[:graph:]]+[[:alnum:]]")
-		url = re2.FindString(input)
+		re1 := regexp.MustCompile("<https://[^/]*/[^>]*>; rel=\"next\"")
+		url = re1.FindString(input)
+		url = strings.Replace(strings.Replace(strings.Split(url, ";")[0], "<", "", -1), ">", "", -1)
 		return url
 	}
 	return url
