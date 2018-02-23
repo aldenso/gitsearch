@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 //ShowUserResult function to print results values
@@ -15,8 +17,13 @@ func (results *RespUser) ShowUserResult() {
 	count := fmt.Sprintf("%s\nResults Count: %v\n%s", line, results.Count, line)
 	output = append(output, count)
 	for _, i := range results.Items {
-		match := fmt.Sprintf("User: %v\nURL: %v\nScore: %v\n%s", i.Login, i.HTMLURL, i.Score, line)
-		output = append(output, match)
+		if ospager != "more" {
+			match := fmt.Sprintf("User: %v\nURL: %v\nScore: %v\n%s", color.YellowString(i.Login), i.HTMLURL, i.Score, line)
+			output = append(output, match)
+		} else {
+			match := fmt.Sprintf("User: %v\nURL: %v\nScore: %v\n%s", i.Login, i.HTMLURL, i.Score, line)
+			output = append(output, match)
+		}
 	}
 	pager(strings.Join(output, "\n"))
 }
@@ -81,25 +88,34 @@ func RunSearchUser(user, paging string) {
 		for items.NextURL != "" {
 			fmt.Println(line)
 			fmt.Println("Next Page ==>", items.NextURL)
+			fmt.Println("Previous Page ==>", items.PreviousURL)
 			var answer string
-			fmt.Println("Go to next page? (Y/N):")
+			fmt.Println("Go to next/previous page, Show again or Quit? (N/P/S/Q):")
 			n, err := fmt.Scanf("%s\n", &answer)
 			if err != nil {
 				fmt.Println(n, err)
 			}
 			switch {
-			case answer == "Y" || answer == "y":
+			case answer == "N" || answer == "n":
 				items = continueSearchUser(items.NextURL)
 				items.ShowUserResult()
-			case answer == "N" || answer == "n":
+			case answer == "P" || answer == "p":
+				if items.PreviousURL != "" {
+					items = continueSearchUser(items.PreviousURL)
+					items.ShowUserResult()
+				} else {
+					fmt.Println("No previous page")
+				}
+			case answer == "Q" || answer == "q":
 				fmt.Println("Stopping")
 				os.Exit(0)
+			case answer == "S" || answer == "s":
+				items.ShowUserResult()
 			default:
-				fmt.Println("*** You must indicate \"Y\" or \"N\" ***")
+				fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
 			}
 		}
 		fmt.Println(line)
-		//fmt.Println("No more results")
 		os.Exit(0)
 	}
 }
