@@ -42,7 +42,7 @@ func searchUser(pattern, paging string) RespUser {
 	if linkHeader = response.Header.Get("Link"); len(linkHeader) == 0 {
 		fmt.Println("Showing results in one page")
 	}
-	data.NextURL = Regexp(linkHeader)
+	data.NextURL, data.PreviousURL = Regexp(linkHeader)
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		log.Fatal(err)
@@ -64,7 +64,7 @@ func continueSearchUser(url string) RespUser {
 	if linkHeader = response.Header.Get("Link"); len(linkHeader) == 0 {
 		fmt.Println("No more results")
 	}
-	data.NextURL = Regexp(linkHeader)
+	data.NextURL, data.PreviousURL = Regexp(linkHeader)
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		log.Fatal(err)

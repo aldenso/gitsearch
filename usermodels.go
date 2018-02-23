@@ -3,6 +3,7 @@ package main
 //RespUser struct for http response
 type RespUser struct {
 	NextURL           string     `json:"-"`
+	PreviousURL       string     `json:"-"`
 	Count             int        `json:"total_count"`
 	IncompleteResults bool       `json:"incomplete_results"`
 	Items             []ItemUser `json:"items"`

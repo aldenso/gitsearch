@@ -4,10 +4,11 @@ import "time"
 
 //RespRepo struct for repo http response
 type RespRepo struct {
-	NextURL    string     `json:"-"`
-	Count      int        `json:"total_count"`
-	Incomplete bool       `json:"incomplete_results"`
-	Items      []ItemRepo `json:"items"`
+	NextURL     string     `json:"-"`
+	PreviousURL string     `json:"-"`
+	Count       int        `json:"total_count"`
+	Incomplete  bool       `json:"incomplete_results"`
+	Items       []ItemRepo `json:"items"`
 }
 
 //ItemOwner function to print results values for users in repos

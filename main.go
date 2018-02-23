@@ -50,17 +50,22 @@ func checkUsage() {
 }
 
 //Regexp function go get the url from Link in header
-func Regexp(input string) string {
-	var url string
+func Regexp(input string) (nextURL, previousURL string) {
 	re0 := regexp.MustCompile("next")
 	next := re0.FindString(input)
 	if next != "" {
 		re1 := regexp.MustCompile("<https://[^/]*/[^>]*>; rel=\"next\"")
-		url = re1.FindString(input)
-		url = strings.Replace(strings.Replace(strings.Split(url, ";")[0], "<", "", -1), ">", "", -1)
-		return url
+		nextURL = re1.FindString(input)
+		nextURL = strings.Replace(strings.Replace(strings.Split(nextURL, ";")[0], "<", "", -1), ">", "", -1)
 	}
-	return url
+	re2 := regexp.MustCompile("prev")
+	previous := re2.FindString(input)
+	if previous != "" {
+		re3 := regexp.MustCompile("<https://[^/]*/[^>]*>; rel=\"prev\"")
+		previousURL = re3.FindString(input)
+		previousURL = strings.Replace(strings.Replace(strings.Split(previousURL, ";")[0], "<", "", -1), ">", "", -1)
+	}
+	return nextURL, previousURL
 }
 
 func pager(input string) {

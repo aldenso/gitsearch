@@ -65,7 +65,7 @@ func searchRepo(pattern, paging string) RespRepo {
 	if linkHeader = response.Header.Get("Link"); len(linkHeader) == 0 {
 		fmt.Println("Showing results in one page")
 	}
-	data.NextURL = Regexp(linkHeader)
+	data.NextURL, data.PreviousURL = Regexp(linkHeader)
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		log.Fatal(err)
@@ -87,7 +87,7 @@ func continueSearchRepo(url string) RespRepo {
 	if linkHeader = response.Header.Get("Link"); len(linkHeader) == 0 {
 		fmt.Println("No more results")
 	}
-	data.NextURL = Regexp(linkHeader)
+	data.NextURL, data.PreviousURL = Regexp(linkHeader)
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		log.Fatal(err)
@@ -104,17 +104,25 @@ func RunSearchRepo(repo, paging string) {
 		for items.NextURL != "" {
 			fmt.Println(line)
 			fmt.Println("Next Page ==>", items.NextURL)
+			fmt.Println("Previous Page ==>", items.PreviousURL)
 			var answer string
-			fmt.Println("Git Clone repo # or Go to next page? (Y/N):")
+			fmt.Println("Git Clone repo #, Go to next/previous page, Show again or Quit? (#/N/P/S/Q):")
 			n, err := fmt.Scanf("%s\n", &answer)
 			if err != nil {
 				fmt.Println(n, err)
 			}
 			switch {
-			case answer == "Y" || answer == "y":
+			case answer == "N" || answer == "n":
 				items = continueSearchRepo(items.NextURL)
 				items.showRepoResult()
-			case answer == "N" || answer == "n":
+			case answer == "P" || answer == "p":
+				if items.PreviousURL != "" {
+					items = continueSearchRepo(items.PreviousURL)
+					items.showRepoResult()
+				} else {
+					fmt.Println("No previous page")
+				}
+			case answer == "Q" || answer == "q":
 				fmt.Println("Stopping")
 				os.Exit(0)
 			case answer == "S" || answer == "s":
@@ -144,16 +152,22 @@ func RunSearchRepo(repo, paging string) {
 				}
 			}
 		}
-		if items.NextURL == "" {
-
+		for items.NextURL == "" {
 			fmt.Println(line)
 			var answer string
-			fmt.Println("Git Clone repo #, show or quit? (#/S/Q):")
+			fmt.Println("Git Clone repo #, Go to previous page, Show again or Quit? (#/P/S/Q):")
 			n, err := fmt.Scanf("%s\n", &answer)
 			if err != nil {
 				fmt.Println(n, err)
 			}
 			switch {
+			case answer == "P" || answer == "p":
+				if items.PreviousURL != "" {
+					items = continueSearchRepo(items.PreviousURL)
+					items.showRepoResult()
+				} else {
+					fmt.Println("No previous page")
+				}
 			case answer == "Q" || answer == "q":
 				fmt.Println("Stopping")
 				os.Exit(0)
