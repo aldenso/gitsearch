@@ -114,11 +114,11 @@ func RunSearchRepo(repo, paging string) {
 			switch {
 			case answer == "N" || answer == "n":
 				items = continueSearchRepo(items.NextURL)
-				items.showRepoResult()
+				choices = items.showRepoResult()
 			case answer == "P" || answer == "p":
 				if items.PreviousURL != "" {
 					items = continueSearchRepo(items.PreviousURL)
-					items.showRepoResult()
+					choices = items.showRepoResult()
 				} else {
 					fmt.Println("No previous page")
 				}
@@ -126,7 +126,7 @@ func RunSearchRepo(repo, paging string) {
 				fmt.Println("Stopping")
 				os.Exit(0)
 			case answer == "S" || answer == "s":
-				items.showRepoResult()
+				choices = items.showRepoResult()
 			default:
 				var clone string
 				for _, v := range choices.Items {
@@ -164,7 +164,7 @@ func RunSearchRepo(repo, paging string) {
 			case answer == "P" || answer == "p":
 				if items.PreviousURL != "" {
 					items = continueSearchRepo(items.PreviousURL)
-					items.showRepoResult()
+					choices = items.showRepoResult()
 				} else {
 					fmt.Println("No previous page")
 				}
@@ -172,7 +172,7 @@ func RunSearchRepo(repo, paging string) {
 				fmt.Println("Stopping")
 				os.Exit(0)
 			case answer == "S" || answer == "s":
-				items.showRepoResult()
+				choices = items.showRepoResult()
 			default:
 				var clone string
 				for _, v := range choices.Items {
