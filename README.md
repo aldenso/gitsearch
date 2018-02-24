@@ -50,6 +50,10 @@ Usage of gitsearch:
         search for a user.
 ```
 
+Example.
+
+![Example1](images/example1.gif)
+
 ## Repo operations
 
 Search repos for username "aldenso".
