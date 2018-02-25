@@ -19,7 +19,7 @@ var (
 	line                          = "==============================================================================="
 	linesmall                     = "-------------------------------------------------------------------------------"
 	linebig                       = "###############################################################################"
-	ospager                       string
+	ospager, fork                 string
 	less, lessEXE                 = "/usr/bin/less", "less.exe"
 )
 
@@ -33,6 +33,7 @@ func init() {
 	flag.StringVar(&language, "lang", "", "indicate a language for search.")
 	flag.StringVar(&language, "l", "", "shorthand for -lang.")
 	flag.StringVar(&login, "login", "", "indicate username for a repo search.")
+	flag.StringVar(&fork, "fork", "true", "indicate if search includes forks (valid: true, false and only).")
 	flag.IntVar(&paging, "paging", 100, "set per page limit.")
 }
 

@@ -26,11 +26,11 @@ func (results *RespRepo) showRepoResult() ItemChoices {
 		item.ID, item.HTMLURL = counter, i.HTMLURL
 		items.Items = append(items.Items, item)
 		if ospager != "more" {
-			match = fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %s\n%s",
-				color.YellowString(i.Name), i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, color.YellowString(strconv.Itoa(counter)), line)
+			match = fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\tfork: %v\n%s\nto Git Clone Choose: %s\n%s",
+				color.YellowString(i.Name), i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, i.Fork, linesmall, color.YellowString(strconv.Itoa(counter)), line)
 		} else {
-			match = fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\n%s\nto Git Clone Choose: %d\n%s",
-				i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, linesmall, counter, line)
+			match = fmt.Sprintf("Repo: %v\t\tOwner: %v\nDescription: %v\nURL: %v\nLanguage: %v\t\tStars: %v\tfork: %v\n%s\nto Git Clone Choose: %d\n%s",
+				i.Name, i.Owner.Login, i.Description, i.HTMLURL, i.Language, i.StargazersCount, i.Fork, linesmall, counter, line)
 
 		}
 		output = append(output, match)
@@ -47,16 +47,16 @@ func searchRepo(pattern, paging string) RespRepo {
 	var url string
 	switch {
 	case len(language) > 0 && len(login) > 0:
-		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "+language:" + language + "&per_page=" + paging)
+		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "+fork:" + fork + "+language:" + language + "&per_page=" + paging)
 	case len(language) > 0 && len(login) == 0:
-		url = (apiURL + "repositories?q=" + pattern + "+language:" + language + "&per_page=" + paging)
+		url = (apiURL + "repositories?q=" + pattern + "+language:" + "+fork:" + fork + language + "&per_page=" + paging)
 	case len(language) == 0 && len(login) > 0:
-		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "&per_page=" + paging)
+		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "+fork:" + fork + "&per_page=" + paging)
 	default:
-		url = (apiURL + "repositories?q=" + pattern + "&per_page=" + paging)
+		url = (apiURL + "repositories?q=" + pattern + "+fork:" + fork + "&per_page=" + paging)
 	}
 	fmt.Println(line)
-	fmt.Println("using url:", url)
+	fmt.Printf("using url:\n%s", url)
 	response, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -78,7 +78,7 @@ func continueSearchRepo(url string) RespRepo {
 	var data RespRepo
 	var linkHeader string
 	fmt.Println(line)
-	fmt.Println("using url:", url)
+	fmt.Printf("using url:\n%s", url)
 	response, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
