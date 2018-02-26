@@ -56,7 +56,7 @@ func searchRepo(apiurl, pattern, paging string) RespRepo {
 		url = (apiurl + "repositories?q=" + pattern + "+fork:" + fork + "&per_page=" + paging)
 	}
 	fmt.Println(line)
-	fmt.Printf("using url:\n%s", url)
+	fmt.Printf("using url:\n%s\n", url)
 	response, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -78,7 +78,7 @@ func continueSearchRepo(url string) RespRepo {
 	var data RespRepo
 	var linkHeader string
 	fmt.Println(line)
-	fmt.Printf("using url:\n%s", url)
+	fmt.Printf("using url:\n%s\n", url)
 	response, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
