@@ -79,6 +79,39 @@ func continueSearchUser(url string) RespUser {
 	return data
 }
 
+func getUserConfirm(items *RespUser) error {
+	var answer string
+	fmt.Println("Go to next/previous page, Show again or Quit? (N/P/S/Q):")
+	n, err := fmt.Scanf("%s\n", &answer)
+	if err != nil {
+		fmt.Println(n, err)
+		return err
+	}
+	switch {
+	case answer == "N" || answer == "n":
+		*items = continueSearchUser(items.NextURL)
+		items.ShowUserResult()
+		return nil
+	case answer == "P" || answer == "p":
+		if items.PreviousURL != "" {
+			*items = continueSearchUser(items.PreviousURL)
+			items.ShowUserResult()
+		} else {
+			fmt.Println("No previous page")
+		}
+		return nil
+	case answer == "Q" || answer == "q":
+		fmt.Println("Stopping")
+		os.Exit(0)
+	case answer == "S" || answer == "s":
+		items.ShowUserResult()
+		return nil
+	default:
+		fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
+	}
+	return nil
+}
+
 //RunSearchUser function to run the main process for user search
 func RunSearchUser(user, paging string) {
 	items := searchUser(apiURL, user, paging)
@@ -89,31 +122,7 @@ func RunSearchUser(user, paging string) {
 			fmt.Println(line)
 			fmt.Println("Next Page ==>", items.NextURL)
 			fmt.Println("Previous Page ==>", items.PreviousURL)
-			var answer string
-			fmt.Println("Go to next/previous page, Show again or Quit? (N/P/S/Q):")
-			n, err := fmt.Scanf("%s\n", &answer)
-			if err != nil {
-				fmt.Println(n, err)
-			}
-			switch {
-			case answer == "N" || answer == "n":
-				items = continueSearchUser(items.NextURL)
-				items.ShowUserResult()
-			case answer == "P" || answer == "p":
-				if items.PreviousURL != "" {
-					items = continueSearchUser(items.PreviousURL)
-					items.ShowUserResult()
-				} else {
-					fmt.Println("No previous page")
-				}
-			case answer == "Q" || answer == "q":
-				fmt.Println("Stopping")
-				os.Exit(0)
-			case answer == "S" || answer == "s":
-				items.ShowUserResult()
-			default:
-				fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
-			}
+			getUserConfirm(&items)
 		}
 		fmt.Println(line)
 		os.Exit(0)

@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"testing"
 
 	"net/http/httptest"
@@ -88,5 +91,96 @@ func Test_continueSearchUser(t *testing.T) {
 	resp2 := continueSearchUser(ts2.URL + "/")
 	if resp2.Count != 1 {
 		t.Errorf("Count mismatch, expected '1', got '%d'", resp2.Count)
+	}
+}
+
+func Test_getUserConfirm(t *testing.T) {
+	ts0 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write(userOK)
+	}))
+	defer ts0.Close()
+	ts1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//urls := fmt.Sprintf("<%s>; rel=\"next\", <%s>; rel=\"prev\"", ts0.URL+"/", ts0.URL+"/")
+		//w.Header().Set("Link", urls)
+		w.WriteHeader(http.StatusOK)
+		w.Write(userOK)
+	}))
+	defer ts1.Close()
+	items := ItemUser{
+		Login:   "user1",
+		HTMLURL: "http://notfound.com",
+		Score:   30,
+	}
+	requests := RespUser{NextURL: ts1.URL + "/",
+		PreviousURL:       "",
+		Count:             1,
+		IncompleteResults: false,
+		Items:             []ItemUser{items},
+	}
+
+	test := [][]byte{[]byte("s"), []byte("r"), []byte("n"), []byte("p")}
+	for _, x := range test {
+		tmpfile, err := ioutil.TempFile("", "example")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer os.Remove(tmpfile.Name()) // clean up
+
+		if _, err := tmpfile.Write(x); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err := tmpfile.Seek(0, 0); err != nil {
+			log.Fatal(err)
+		}
+
+		oldStdin := os.Stdin
+		defer func() { os.Stdin = oldStdin }() // Restore original Stdin
+
+		os.Stdin = tmpfile
+		if err := getUserConfirm(&requests); err != nil {
+			t.Errorf("getUserConfirm failed: %v", err)
+		}
+
+		if err := tmpfile.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}
+	// test previous url not empty
+	requests = RespUser{PreviousURL: ts1.URL + "/",
+		Count:             1,
+		IncompleteResults: false,
+		Items:             []ItemUser{items},
+	}
+	test = [][]byte{[]byte("p")}
+	for _, x := range test {
+		tmpfile, err := ioutil.TempFile("", "example")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer os.Remove(tmpfile.Name()) // clean up
+
+		if _, err := tmpfile.Write(x); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err := tmpfile.Seek(0, 0); err != nil {
+			log.Fatal(err)
+		}
+
+		oldStdin := os.Stdin
+		defer func() { os.Stdin = oldStdin }() // Restore original Stdin
+
+		os.Stdin = tmpfile
+		if err := getUserConfirm(&requests); err != nil {
+			t.Errorf("getUserConfirm failed: %v", err)
+		}
+
+		if err := tmpfile.Close(); err != nil {
+			log.Fatal(err)
+		}
 	}
 }

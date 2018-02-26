@@ -95,6 +95,114 @@ func continueSearchRepo(url string) RespRepo {
 	return data
 }
 
+func getRepoConfirmNextNotEmpty(items *RespRepo, choices *ItemChoices) error {
+	fmt.Println(line)
+	fmt.Println("Next Page ==>", items.NextURL)
+	fmt.Println("Previous Page ==>", items.PreviousURL)
+	var answer string
+	fmt.Println("Git Clone repo #, Go to next/previous page, Show again or Quit? (#/N/P/S/Q):")
+	n, err := fmt.Scanf("%s\n", &answer)
+	if err != nil {
+		fmt.Println(n, err)
+	}
+	switch {
+	case answer == "N" || answer == "n":
+		*items = continueSearchRepo(items.NextURL)
+		*choices = items.showRepoResult()
+		return nil
+	case answer == "P" || answer == "p":
+		if items.PreviousURL != "" {
+			*items = continueSearchRepo(items.PreviousURL)
+			*choices = items.showRepoResult()
+		} else {
+			fmt.Println("No previous page")
+		}
+		return nil
+	case answer == "Q" || answer == "q":
+		fmt.Println("Stopping")
+		os.Exit(0)
+	case answer == "S" || answer == "s":
+		*choices = items.showRepoResult()
+		return nil
+	default:
+		var clone string
+		for _, v := range choices.Items {
+			if answer == strconv.Itoa(v.ID) {
+				clone = v.HTMLURL
+			}
+		}
+		if clone == "" {
+			fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
+		} else {
+			if ospager != "more" {
+				colormsg := fmt.Sprintf("%s\n%s %s\n%s\n",
+					color.CyanString(linebig), color.CyanString("Cloning repo:"), color.MagentaString(clone), color.CyanString(linebig))
+				pager(colormsg)
+			} else {
+				fmt.Printf("%s\nCloning repo %s\n%s\n", linebig, clone, linebig)
+			}
+			cmd := exec.Command("git", "clone", clone)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			cmd.Run()
+			fmt.Println(line)
+		}
+	}
+	return nil
+}
+
+func getRepoConfirmNextEmpty(items *RespRepo, choices *ItemChoices) error {
+	fmt.Println(line)
+	fmt.Println("Next Page ==>", items.NextURL)
+	fmt.Println("Previous Page ==>", items.PreviousURL)
+	var answer string
+	fmt.Println("Git Clone repo #, Go to previous page, Show again or Quit? (#/P/S/Q):")
+	n, err := fmt.Scanf("%s\n", &answer)
+	if err != nil {
+		fmt.Println(n, err)
+	}
+	switch {
+	case answer == "P" || answer == "p":
+		if items.PreviousURL != "" {
+			*items = continueSearchRepo(items.PreviousURL)
+			*choices = items.showRepoResult()
+		} else {
+			fmt.Println("No previous page")
+		}
+		return nil
+	case answer == "Q" || answer == "q":
+		fmt.Println("Stopping")
+		os.Exit(0)
+	case answer == "S" || answer == "s":
+		*choices = items.showRepoResult()
+		return nil
+	default:
+		var clone string
+		for _, v := range choices.Items {
+			if answer == strconv.Itoa(v.ID) {
+				clone = v.HTMLURL
+			}
+		}
+		if clone == "" {
+			fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
+		} else {
+			if ospager != "more" {
+				colormsg := fmt.Sprintf("%s\n%s %s\n%s\n",
+					color.CyanString(linebig), color.CyanString("Cloning repo:"), color.MagentaString(clone), color.CyanString(linebig))
+				pager(colormsg)
+			} else {
+				fmt.Printf("%s\nCloning repo %s\n%s\n", linebig, clone, linebig)
+			}
+			cmd := exec.Command("git", "clone", clone)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			cmd.Run()
+			fmt.Println(line)
+		}
+	}
+	return nil
+}
+
 //RunSearchRepo function to run the main process for user search
 func RunSearchRepo(repo, paging string) {
 	items := searchRepo(apiURL, repo, paging)
@@ -102,101 +210,11 @@ func RunSearchRepo(repo, paging string) {
 		choices := items.showRepoResult()
 		// loop over next page url
 		for items.NextURL != "" {
-			fmt.Println(line)
-			fmt.Println("Next Page ==>", items.NextURL)
-			fmt.Println("Previous Page ==>", items.PreviousURL)
-			var answer string
-			fmt.Println("Git Clone repo #, Go to next/previous page, Show again or Quit? (#/N/P/S/Q):")
-			n, err := fmt.Scanf("%s\n", &answer)
-			if err != nil {
-				fmt.Println(n, err)
-			}
-			switch {
-			case answer == "N" || answer == "n":
-				items = continueSearchRepo(items.NextURL)
-				choices = items.showRepoResult()
-			case answer == "P" || answer == "p":
-				if items.PreviousURL != "" {
-					items = continueSearchRepo(items.PreviousURL)
-					choices = items.showRepoResult()
-				} else {
-					fmt.Println("No previous page")
-				}
-			case answer == "Q" || answer == "q":
-				fmt.Println("Stopping")
-				os.Exit(0)
-			case answer == "S" || answer == "s":
-				choices = items.showRepoResult()
-			default:
-				var clone string
-				for _, v := range choices.Items {
-					if answer == strconv.Itoa(v.ID) {
-						clone = v.HTMLURL
-					}
-				}
-				if clone == "" {
-					fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
-				} else {
-					if ospager != "more" {
-						colormsg := fmt.Sprintf("%s\n%s %s\n%s\n",
-							color.CyanString(linebig), color.CyanString("Cloning repo:"), color.MagentaString(clone), color.CyanString(linebig))
-						pager(colormsg)
-					} else {
-						fmt.Printf("%s\nCloning repo %s\n%s\n", linebig, clone, linebig)
-					}
-					cmd := exec.Command("git", "clone", clone)
-					cmd.Stdout = os.Stdout
-					cmd.Stderr = os.Stderr
-					cmd.Run()
-					fmt.Println(line)
-				}
-			}
+			getRepoConfirmNextNotEmpty(&items, &choices)
 		}
 		for items.NextURL == "" {
 			fmt.Println(line)
-			var answer string
-			fmt.Println("Git Clone repo #, Go to previous page, Show again or Quit? (#/P/S/Q):")
-			n, err := fmt.Scanf("%s\n", &answer)
-			if err != nil {
-				fmt.Println(n, err)
-			}
-			switch {
-			case answer == "P" || answer == "p":
-				if items.PreviousURL != "" {
-					items = continueSearchRepo(items.PreviousURL)
-					choices = items.showRepoResult()
-				} else {
-					fmt.Println("No previous page")
-				}
-			case answer == "Q" || answer == "q":
-				fmt.Println("Stopping")
-				os.Exit(0)
-			case answer == "S" || answer == "s":
-				choices = items.showRepoResult()
-			default:
-				var clone string
-				for _, v := range choices.Items {
-					if answer == strconv.Itoa(v.ID) {
-						clone = v.HTMLURL
-					}
-				}
-				if clone == "" {
-					fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
-				} else {
-					if ospager != "more" {
-						colormsg := fmt.Sprintf("%s\n%s %s\n%s\n",
-							color.CyanString(linebig), color.CyanString("Cloning repo:"), color.MagentaString(clone), color.CyanString(linebig))
-						pager(colormsg)
-					} else {
-						fmt.Printf("%s\nCloning repo %s\n%s\n", linebig, clone, linebig)
-					}
-					cmd := exec.Command("git", "clone", clone)
-					cmd.Stdout = os.Stdout
-					cmd.Stderr = os.Stderr
-					cmd.Run()
-					fmt.Println(line)
-				}
-			}
+			getRepoConfirmNextEmpty(&items, &choices)
 		}
 		fmt.Println(line)
 		os.Exit(0)
