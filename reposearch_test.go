@@ -24,7 +24,6 @@ func Test_searchRepo(t *testing.T) {
 		w.Write(requestsOK)
 		if r.Method != "GET" {
 			t.Errorf("Expected 'GET' request, got '%s'", r.Method)
-			fmt.Println()
 		}
 		if r.URL.RequestURI() != "/repositories?q=pattern+fork:true&per_page=100" {
 			t.Errorf("Expected request to '/repositories?q=pattern+fork:true&per_page=100', got '%s'", r.URL.RequestURI())

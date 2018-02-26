@@ -29,15 +29,15 @@ func (results *RespUser) ShowUserResult() {
 }
 
 //searchUser function to make search for a particular user pattern
-func searchUser(pattern, paging string) RespUser {
+func searchUser(apiurl, pattern, paging string) RespUser {
 	var data RespUser
 	var linkHeader string
 	var url string
 	switch {
 	case len(language) > 0:
-		url = (apiURL + "users?q=" + pattern + "+language:" + language + "&per_page=" + paging)
+		url = (apiurl + "users?q=" + pattern + "+language:" + language + "&per_page=" + paging)
 	case len(language) == 0:
-		url = (apiURL + "users?q=" + pattern + "&per_page=" + paging)
+		url = (apiurl + "users?q=" + pattern + "&per_page=" + paging)
 	}
 	fmt.Println(line)
 	fmt.Println("using url:", url)
@@ -81,7 +81,7 @@ func continueSearchUser(url string) RespUser {
 
 //RunSearchUser function to run the main process for user search
 func RunSearchUser(user, paging string) {
-	items := searchUser(user, paging)
+	items := searchUser(apiURL, user, paging)
 	if items.Count > 0 {
 		items.ShowUserResult()
 		// loop over next page url
