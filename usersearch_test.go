@@ -70,14 +70,23 @@ func Test_showUserResult(t *testing.T) {
 }
 
 func Test_continueSearchUser(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Link", "<https://www2.com/next>; rel=\"next\", <https://www2.com/prev>; rel=\"prev\"")
 		w.WriteHeader(http.StatusOK)
 		w.Write(userOK)
 	}))
-	defer ts.Close()
-	resp := continueSearchUser(ts.URL + "/")
-	if resp.Count != 1 {
-		t.Errorf("Count mismatch, expected '1', got '%d'", resp.Count)
+	defer ts1.Close()
+	resp1 := continueSearchUser(ts1.URL + "/")
+	if resp1.Count != 1 {
+		t.Errorf("Count mismatch, expected '1', got '%d'", resp1.Count)
+	}
+	ts2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write(userOK)
+	}))
+	defer ts2.Close()
+	resp2 := continueSearchUser(ts2.URL + "/")
+	if resp2.Count != 1 {
+		t.Errorf("Count mismatch, expected '1', got '%d'", resp2.Count)
 	}
 }
