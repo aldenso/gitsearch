@@ -108,7 +108,6 @@ func getUserConfirm(items *RespUser) error {
 		return nil
 	default:
 		fmt.Printf("%s\n--- Option '%s' no available ---\n%s\n", linebig, answer, linebig)
-		return nil
 	}
 	return nil
 }
