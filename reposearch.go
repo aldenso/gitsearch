@@ -41,19 +41,19 @@ func (results *RespRepo) showRepoResult() ItemChoices {
 }
 
 //searchRepo function to make search for a particular user pattern
-func searchRepo(pattern, paging string) RespRepo {
+func searchRepo(apiurl, pattern, paging string) RespRepo {
 	var data RespRepo
 	var linkHeader string
 	var url string
 	switch {
 	case len(language) > 0 && len(login) > 0:
-		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "+fork:" + fork + "+language:" + language + "&per_page=" + paging)
+		url = (apiurl + "repositories?q=" + pattern + "+user:" + login + "+fork:" + fork + "+language:" + language + "&per_page=" + paging)
 	case len(language) > 0 && len(login) == 0:
-		url = (apiURL + "repositories?q=" + pattern + "+language:" + "+fork:" + fork + language + "&per_page=" + paging)
+		url = (apiurl + "repositories?q=" + pattern + "+fork:" + fork + "+language:" + language + "&per_page=" + paging)
 	case len(language) == 0 && len(login) > 0:
-		url = (apiURL + "repositories?q=" + pattern + "+user:" + login + "+fork:" + fork + "&per_page=" + paging)
+		url = (apiurl + "repositories?q=" + pattern + "+user:" + login + "+fork:" + fork + "&per_page=" + paging)
 	default:
-		url = (apiURL + "repositories?q=" + pattern + "+fork:" + fork + "&per_page=" + paging)
+		url = (apiurl + "repositories?q=" + pattern + "+fork:" + fork + "&per_page=" + paging)
 	}
 	fmt.Println(line)
 	fmt.Printf("using url:\n%s", url)
@@ -97,7 +97,7 @@ func continueSearchRepo(url string) RespRepo {
 
 //RunSearchRepo function to run the main process for user search
 func RunSearchRepo(repo, paging string) {
-	items := searchRepo(repo, paging)
+	items := searchRepo(apiURL, repo, paging)
 	if items.Count > 0 {
 		choices := items.showRepoResult()
 		// loop over next page url
