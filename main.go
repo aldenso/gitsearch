@@ -110,15 +110,15 @@ func main() {
 	flag.Parse()
 	perpage := strconv.Itoa(paging)
 	if user && searchString != "" {
-		RunSearchUser(searchString, perpage)
+		RunSearchUser(apiURL, searchString, perpage)
 	} else if repo {
 		switch {
 		case searchString == "" && login == "":
 			checkUsage()
 		case searchString == "" && login != "":
-			RunSearchRepo(searchString, perpage)
+			RunSearchRepo(apiURL, searchString, perpage)
 		case searchString != "":
-			RunSearchRepo(searchString, perpage)
+			RunSearchRepo(apiURL, searchString, perpage)
 		}
 	} else {
 		checkUsage()

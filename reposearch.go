@@ -204,8 +204,8 @@ func getRepoConfirmNextEmpty(items *RespRepo, choices *ItemChoices) error {
 }
 
 //RunSearchRepo function to run the main process for user search
-func RunSearchRepo(repo, paging string) {
-	items := searchRepo(apiURL, repo, paging)
+func RunSearchRepo(apiurl, repo, paging string) {
+	items := searchRepo(apiurl, repo, paging)
 	if items.Count > 0 {
 		choices := items.showRepoResult()
 		// loop over next page url

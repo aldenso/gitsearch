@@ -95,11 +95,11 @@ func Test_continueSearchUser(t *testing.T) {
 }
 
 func Test_getUserConfirm(t *testing.T) {
-	ts0 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(userOK)
-	}))
-	defer ts0.Close()
+	// ts0 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 	w.WriteHeader(http.StatusOK)
+	// 	w.Write(userOK)
+	// }))
+	// defer ts0.Close()
 	ts1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//urls := fmt.Sprintf("<%s>; rel=\"next\", <%s>; rel=\"prev\"", ts0.URL+"/", ts0.URL+"/")
 		//w.Header().Set("Link", urls)
@@ -120,6 +120,41 @@ func Test_getUserConfirm(t *testing.T) {
 	}
 
 	test := [][]byte{[]byte("s"), []byte("r"), []byte("n"), []byte("p")}
+	for _, x := range test {
+		tmpfile, err := ioutil.TempFile("", "example")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer os.Remove(tmpfile.Name()) // clean up
+
+		if _, err := tmpfile.Write(x); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err := tmpfile.Seek(0, 0); err != nil {
+			log.Fatal(err)
+		}
+
+		oldStdin := os.Stdin
+		defer func() { os.Stdin = oldStdin }() // Restore original Stdin
+
+		os.Stdin = tmpfile
+		if err := getUserConfirm(&requests); err != nil {
+			t.Errorf("getUserConfirm failed: %v", err)
+		}
+
+		if err := tmpfile.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}
+	// test next url empty
+	requests = RespUser{NextURL: "",
+		Count:             1,
+		IncompleteResults: false,
+		Items:             []ItemUser{items},
+	}
+	test = [][]byte{[]byte("n")}
 	for _, x := range test {
 		tmpfile, err := ioutil.TempFile("", "example")
 		if err != nil {
@@ -183,4 +218,17 @@ func Test_getUserConfirm(t *testing.T) {
 			log.Fatal(err)
 		}
 	}
+}
+
+func Test_RunSearchUser(t *testing.T) {
+	ts1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write(userOK)
+		if r.URL.RequestURI() != "/users?q=aldenso&per_page=10" {
+			t.Errorf("Expected request to '/users?q=aldenso&per_page=10', got '%s'", r.URL.RequestURI())
+		}
+	}))
+	defer ts1.Close()
+	language = ""
+	RunSearchUser(ts1.URL+"/", "aldenso", "10")
 }

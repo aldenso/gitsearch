@@ -89,15 +89,19 @@ func getUserConfirm(items *RespUser) error {
 	}
 	switch {
 	case answer == "N" || answer == "n":
-		*items = continueSearchUser(items.NextURL)
-		items.ShowUserResult()
+		if items.NextURL != "" {
+			*items = continueSearchUser(items.NextURL)
+			items.ShowUserResult()
+		} else {
+			fmt.Println("No next page found")
+		}
 		return nil
 	case answer == "P" || answer == "p":
 		if items.PreviousURL != "" {
 			*items = continueSearchUser(items.PreviousURL)
 			items.ShowUserResult()
 		} else {
-			fmt.Println("No previous page")
+			fmt.Println("No previous page found")
 		}
 		return nil
 	case answer == "Q" || answer == "q":
@@ -113,18 +117,18 @@ func getUserConfirm(items *RespUser) error {
 }
 
 //RunSearchUser function to run the main process for user search
-func RunSearchUser(user, paging string) {
-	items := searchUser(apiURL, user, paging)
+func RunSearchUser(apiurl, user, paging string) {
+	items := searchUser(apiurl, user, paging)
 	if items.Count > 0 {
 		items.ShowUserResult()
 		// loop over next page url
-		for items.NextURL != "" {
+		for items.NextURL != "" || items.PreviousURL != "" {
 			fmt.Println(line)
 			fmt.Println("Next Page ==>", items.NextURL)
 			fmt.Println("Previous Page ==>", items.PreviousURL)
 			getUserConfirm(&items)
 		}
 		fmt.Println(line)
-		os.Exit(0)
+		//os.Exit(0)
 	}
 }
