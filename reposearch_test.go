@@ -265,6 +265,41 @@ func Test_getRepoConfirmNextEmpty(t *testing.T) {
 			log.Fatal(err)
 		}
 	}
+	// test next url empty from previous not empty next url.
+	requests = RespRepo{NextURL: "",
+		Count:      1,
+		Incomplete: false,
+		Items:      []ItemRepo{items},
+	}
+	test = [][]byte{[]byte("n")}
+	for _, x := range test {
+		tmpfile, err := ioutil.TempFile("", "example")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer os.Remove(tmpfile.Name()) // clean up
+
+		if _, err := tmpfile.Write(x); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err := tmpfile.Seek(0, 0); err != nil {
+			log.Fatal(err)
+		}
+
+		oldStdin := os.Stdin
+		defer func() { os.Stdin = oldStdin }() // Restore original Stdin
+
+		os.Stdin = tmpfile
+		if err := getRepoConfirmNextNotEmpty(&requests, &choices); err != nil {
+			t.Errorf("getUserConfirm failed: %v", err)
+		}
+
+		if err := tmpfile.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}
 	// test previous url not empty
 	requests = RespRepo{PreviousURL: ts0.URL + "/",
 		Count:      1,

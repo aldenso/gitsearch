@@ -107,8 +107,12 @@ func getRepoConfirmNextNotEmpty(items *RespRepo, choices *ItemChoices) error {
 	}
 	switch {
 	case answer == "N" || answer == "n":
-		*items = continueSearchRepo(items.NextURL)
-		*choices = items.showRepoResult()
+		if items.NextURL != "" {
+			*items = continueSearchRepo(items.NextURL)
+			*choices = items.showRepoResult()
+		} else {
+			fmt.Println("No next page found")
+		}
 		return nil
 	case answer == "P" || answer == "p":
 		if items.PreviousURL != "" {
@@ -209,7 +213,7 @@ func RunSearchRepo(apiurl, repo, paging string) {
 	if items.Count > 0 {
 		choices := items.showRepoResult()
 		// loop over next page url
-		for items.NextURL != "" {
+		for items.NextURL != "" || items.PreviousURL != "" {
 			getRepoConfirmNextNotEmpty(&items, &choices)
 		}
 		for items.NextURL == "" {
@@ -217,6 +221,6 @@ func RunSearchRepo(apiurl, repo, paging string) {
 			getRepoConfirmNextEmpty(&items, &choices)
 		}
 		fmt.Println(line)
-		os.Exit(0)
+		//os.Exit(0)
 	}
 }
