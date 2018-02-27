@@ -39,15 +39,16 @@ func init() {
 
 func checkUsage() {
 	fmt.Println("You must use an option like:")
-	fmt.Println("./gitsearch -help")
-	fmt.Println("./gitsearch -h")
-	fmt.Println("./gitsearch -user -pattern pattern")
-	fmt.Println("./gitsearch -repo -pattern pattern")
-	fmt.Println("./gitsearch -u -p pattern")
-	fmt.Println("./gitsearch -r -login username")
-	fmt.Println("./gitsearch -r -p pattern")
-	fmt.Println("./gitsearch -r -p pattern -l language -login username")
-	fmt.Println("./gitsearch -r -p pattern -paging=10")
+	fmt.Println("gitsearch -help")
+	fmt.Println("gitsearch -h")
+	fmt.Println("gitsearch -user -pattern pattern")
+	fmt.Println("gitsearch -repo -pattern pattern")
+	fmt.Println("gitsearch -u -p pattern")
+	fmt.Println("gitsearch -r -login username")
+	fmt.Println("gitsearch -r -p pattern")
+	fmt.Println("gitsearch -r -p pattern -l language -login username")
+	fmt.Println("gitsearch -r -p pattern -paging=10")
+	fmt.Println("gitsearch -r -p docker -fork only")
 }
 
 //Regexp function go get the url from Link in header
